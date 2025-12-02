@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify OTP</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-red: #960b15;
@@ -12,7 +11,6 @@
             --orange-btn: #cf6828;
             --dark-orange-btn: #a6501e;
             --text-color: #4a4a4a;
-            --error-color: #ff3333; /* Added for error styling */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -32,7 +30,7 @@
             top: -55px;
             left: 0;
             width: 100%;
-            height: 35%; 
+            height: 35%; /* Adjusts how far down the curve goes */
             background-color: var(--cream);
             border-bottom-left-radius: 99% 77%;
             border-bottom-right-radius: 99% 77%;
@@ -57,9 +55,12 @@
             position: relative;
             width: 350px;
             height: 350px;
+            /* background-color: white; */
             border-radius: 50%;
+            /* border: 4px solid #d4af37; */
             margin-bottom: 40px;
             overflow: hidden;
+            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -79,6 +80,8 @@
             margin-bottom: 30px; line-height: 1.4; opacity: 0.9;
         }
 
+        .phone-highlight { font-weight: bold; }
+
         /* OTP Inputs Container */
         .otp-inputs {
             display: flex;
@@ -92,7 +95,7 @@
             width: 60px;
             height: 60px;
             border-radius: 10px;
-            border: 2px solid transparent; /* Added for error styling */
+            border: none;
             background-color: var(--cream);
             color: #D35E19;
             font-size: 24px;
@@ -101,7 +104,6 @@
             outline: none;
             transition: transform 0.2s;
         }
-        .otp-box.error-border { border-color: var(--error-color); }
 
         .otp-box:focus {
             transform: scale(1.05);
@@ -126,7 +128,7 @@
         .timer-text {
             color: #fffacb; font-size: 12px; opacity: 0.8; cursor: pointer;
         }
-        .timer-text.resend-active:hover { text-decoration: underline; opacity: 1; }
+        .timer-text:hover { text-decoration: underline; opacity: 1; }
 
     </style>
 </head>
@@ -141,144 +143,84 @@
 
         <h2 class="page-title">Please check your email</h2>
         <p class="page-desc">
-            We've sent a code to your **email address** <span id="displayEmail" class="phone-highlight">...</span>
+            We've sent a code to your phone number <span id="displayPhone" class="phone-highlight">...</span>
         </p>
-        
-        <form id="otpForm" action="verify_otp.php" method="POST"> 
-            <div class="otp-inputs" id="otpContainer">
-                <input type="text" class="otp-box" id="otp1" maxlength="1" inputmode="numeric">
-                <input type="text" class="otp-box" id="otp2" maxlength="1" inputmode="numeric">
-                <input type="text" class="otp-box" id="otp3" maxlength="1" inputmode="numeric">
-                <input type="text" class="otp-box" id="otp4" maxlength="1" inputmode="numeric">
-                <input type="hidden" id="combinedOtp" name="otp_code">
-                <input type="hidden" id="hiddenEmail" name="email"> 
-            </div>
 
-            <div class="btn-row">
-                <button type="button" class="btn-back" onclick="window.location.href='forgot_password.php'">Back</button>
-                <button type="submit" class="btn-verify" id="verifyBtn">Verify</button>
-            </div>
-        </form>
+        <div class="otp-inputs" id="otpContainer">
+            <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-box" maxlength="1" inputmode="numeric">
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-back" onclick="window.location.href='forgot-password.html'">Back</button>
+            <button class="btn-verify" onclick="verifyCode()">Verify</button>
+        </div>
 
         <div class="timer-text" id="resendText">
-            Send code again <span id="timer">05:00</span>
+            Send code again <span id="timer">00:23</span>
         </div>
     </div>
 
-    <script>
-        // 1. Setup Variables
-        const inputs = document.querySelectorAll('.otp-box');
-        const displayEmail = document.getElementById('displayEmail');
-        const hiddenEmail = document.getElementById('hiddenEmail');
-        const combinedOtpInput = document.getElementById('combinedOtp');
-        
-        // Retrieve data from localStorage (set by forgot_password.php)
-        const storedEmail = localStorage.getItem('resetEmail') || "";
-        const serverOtp = localStorage.getItem('otpCode'); // Stored correct code
-        
-        // Redirect if reset process wasn't started properly
-        if (!storedEmail || !serverOtp) {
-             alert("Verification session invalid. Please restart the forgot password process.");
-             window.location.href = 'forgot_password.php';
+   <script>
+    // 1. Display Phone Number
+    const storedPhone = localStorage.getItem('userPhone') || "09123456789";
+    document.getElementById('displayPhone').textContent = `"${storedPhone}"`;
+
+    // 2. Input Focus Logic (Kept the same)
+    const inputs = document.querySelectorAll('.otp-box');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length === 1 && index < inputs.length - 1) { inputs[index + 1].focus(); }
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && e.target.value === '' && index > 0) { inputs[index - 1].focus(); }
+        });
+    });
+    window.onload = () => inputs[0].focus();
+
+    // 3. Countdown Timer (Kept the same)
+    let timeLeft = 23;
+    const timerElement = document.getElementById('timer');
+    const resendText = document.getElementById('resendText');
+    const countdown = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerElement.textContent = "";
+            resendText.textContent = "Resend Code";
+            resendText.style.fontWeight = "bold";
+            resendText.onclick = () => {
+                 // Simulate Resend
+                 const code = localStorage.getItem('serverOtp');
+                 alert("DEMO MODE: Resent Code: " + code);
+            };
+        } else {
+            let seconds = timeLeft < 10 ? "0" + timeLeft : timeLeft;
+            timerElement.textContent = `00:${seconds}`;
+            timeLeft -= 1;
         }
-        
-        // Display Email
-        displayEmail.textContent = `"${storedEmail}"`;
-        hiddenEmail.value = storedEmail;
+    }, 1000);
 
+    // 4. VERIFY LOGIC
+    function verifyCode() {
+        let enteredCode = "";
+        inputs.forEach(input => enteredCode += input.value);
 
-        // 2. Input Focus and Keydown Logic
-        inputs.forEach((input, index) => {
-            // Auto-focus logic
-            input.addEventListener('input', (e) => {
-                if (e.target.value.length === 1) {
-                    input.classList.remove('error-border');
-                    if (index < inputs.length - 1) { inputs[index + 1].focus(); }
-                }
-            });
-            // Backspace logic
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && e.target.value === '' && index > 0) { 
-                    inputs[index - 1].focus(); 
-                }
-            });
-            // Ensure only single numeric input
-            input.addEventListener('keyup', (e) => {
-                if (e.target.value.length > 1) e.target.value = e.target.value.slice(0, 1);
-            });
-        });
-        window.onload = () => inputs[0].focus();
+        // Retrieve the correct code we generated on the previous page
+        const correctCode = localStorage.getItem('serverOtp');
 
-
-        // 3. Form Submission Handling
-        const otpForm = document.getElementById('otpForm');
-
-        otpForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            let enteredCode = "";
-            let allFilled = true;
-            
-            inputs.forEach(input => {
-                enteredCode += input.value;
-                if (input.value === '') allFilled = false;
-                input.classList.remove('error-border'); // Clear existing errors
-            });
-
-            if (!allFilled) {
-                alert("Please fill all 4 digits.");
-                inputs.forEach(input => { if (input.value === '') input.classList.add('error-border'); });
-                return;
-            }
-
-            // --- Client-Side Verification (DEMO SIMULATION) ---
-            if (enteredCode === String(serverOtp)) { 
-                // SUCCESS: Clear sensitive local storage items
-                localStorage.removeItem('otpCode');
-                
-                // Set the combined value into the hidden form field
-                combinedOtpInput.value = enteredCode;
-                
-                // FINAL SUCCESS ALERT AND REDIRECT
-                alert("Verification successful! You can now reset your password.");
-                window.location.href = "reset-password.html"; 
-
-            } else {
-                // FAILURE
-                alert("Incorrect code. Try again.");
-                inputs.forEach(input => input.classList.add('error-border'));
-            }
-        });
-
-
-        // 4. Countdown Timer Logic
-        let timeLeft = 300; // 5 minutes * 60 seconds
-        const timerElement = document.getElementById('timer');
-        const resendText = document.getElementById('resendText');
-        const countdown = setInterval(() => {
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                timerElement.textContent = "00:00";
-                resendText.textContent = "Resend Code";
-                resendText.classList.add('resend-active');
-                resendText.onclick = () => {
-                    alert("DEMO MODE: Resend function triggered. Restarting to resend email.");
-                    // Redirect back to start the process over (simulating resend)
-                    window.location.href = 'forgot_password.php'; 
-                };
-            } else {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                
-                const minDisplay = minutes < 10 ? "0" + minutes : minutes;
-                const secDisplay = seconds < 10 ? "0" + seconds : seconds;
-                
-                timerElement.textContent = `${minDisplay}:${secDisplay}`;
-                timeLeft -= 1;
-            }
-        }, 1000);
-
-    </script>
+        if (enteredCode === correctCode) {
+            alert("SUCCESS! Account verified.");
+            // Redirect to Reset Password Page
+            window.location.href = "reset-password.html"; 
+        } else {
+            alert("Incorrect code. Try again.");
+            inputs.forEach(input => input.value = ""); // Clear inputs
+            inputs[0].focus();
+        }
+    }
+</script>
 
 </body>
 </html>
