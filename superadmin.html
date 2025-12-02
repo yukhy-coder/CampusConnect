@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Color Palette based on the screenshot */
+        :root {
+            --primary-red: #960b15;       /* Deep red header/sidebar */
+            --light-red: #bb3339;         /* Lighter red for active sidebar link */
+            --background-tan: #f5eedb;    /* Main background color for content */
+            --sidebar-content-bg: #d19a9a; /* Background for content in the red sidebar */
+            --text-dark: #333;
+            --text-light: #fffacb;
+            --sidebar-width: 250px;
+            
+            /* Card Icon Backgrounds (Light Yellow/Creamy) */
+            --card-icon-bg-1: #fffae8;
+            --card-icon-bg-2: #fff5e8;
+            --card-icon-bg-3: #fff9e8;
+            --card-icon-bg-4: #fff4e8;
+            --card-text-color: #666;
+            --card-value-color: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: var(--background-tan);
+            min-height: 100vh;
+        }
+
+        /* --- 1. SIDEBAR (Left Panel) --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-red);
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header {
+            background-color: #bb3339; /* Slightly lighter red behind the logo */
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+        
+        .sidebar-logo {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: white;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .sidebar-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar-title { font-weight: 600; font-size: 16px; }
+
+        .sidebar-menu {
+            margin-top: 20px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: var(--text-light);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            gap: 15px;
+            border-left: 5px solid transparent;
+        }
+
+        .sidebar-item.active {
+            background-color: var(--sidebar-content-bg); /* Tan/red background color from image */
+            color: var(--primary-red); /* Darker text for contrast */
+            border-left: 5px solid transparent; /* No gold border visible */
+        }
+        .sidebar-item.active i {
+            color: var(--primary-red);
+        }
+
+        /* --- 2. HEADER (Top Navigation) --- */
+        header {
+            width: calc(100% - var(--sidebar-width));
+            height: 70px;
+            background-color: var(--primary-red);
+            color: white;
+            padding: 0 30px 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #830a13; /* Darker red search background */
+            border-radius: 5px;
+            padding: 5px 10px;
+            transition: background-color 0.2s;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            color: white;
+            padding: 5px;
+            outline: none;
+            width: 150px;
+            font-size: 14px;
+        }
+        .search-bar i { font-size: 16px; color: white; cursor: pointer; }
+
+        .profile-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--text-light);
+            color: var(--primary-red);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        /* --- 3. MAIN CONTENT AREA --- */
+        .main-content {
+            margin-left: var(--sidebar-width); /* Space for fixed sidebar */
+            padding: 90px 30px 30px 30px; 
+            flex-grow: 1;
+        }
+
+        .content-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 30px;
+        }
+
+        /* --- 4. STATS CARDS --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            /* Using minmax to ensure even wrapping */
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-height: 120px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            color: var(--card-text-color);
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--primary-red);
+        }
+
+        /* Card Colors (matching screenshot) */
+        .card-icon-1 { background-color: var(--card-icon-bg-1); }
+        .card-icon-2 { background-color: var(--card-icon-bg-2); }
+        .card-icon-3 { background-color: var(--card-icon-bg-3); }
+        .card-icon-4 { background-color: var(--card-icon-bg-4); }
+
+        .card-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--card-value-color);
+            margin-top: 5px;
+        }
+        
+        /* Menu Icon (Hamburger) */
+        .hamburger-icon {
+            font-size: 24px;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="header-logo sidebar-logo">
+                <img src="images/logo.png" alt="SSG Logo" onerror="this.style.display='none'">
+            </div>
+            <div class="sidebar-title">Supreme Student Government</div>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="sidebar-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Officers</span>
+            </div>
+        </div>
+    </aside>
+
+    <header>
+        <div class="header-right">
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div class="profile-icon">K</div>
+            <i class="fa-solid fa-bars hamburger-icon"></i>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="content-title">Super Admin Dashboard</h1>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="card-header">
+                    <div class="card-icon card-icon-1">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="card-label">Total Officers</div>
+                </div>
+                <div class="card-value">30</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-header">
+                    <div class="card-icon card-icon-2">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="card-label">Officers Logged-in Today</div>
+                </div>
+                <div class="card-value">10</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-header">
+                    <div class="card-icon card-icon-3">
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                    <div class="card-label">Anonymous Message Received</div>
+                </div>
+                <div class="card-value">200</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="card-header">
+                    <div class="card-icon card-icon-4">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div class="card-label">Total Event Listed</div>
+                </div>
+                <div class="card-value">15</div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

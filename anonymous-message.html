@@ -6,7 +6,7 @@
     <title>Send Anonymous Message</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- KEEP YOUR EXISTING CSS EXACTLY THE SAME --- */
+        /* --- CSS STYLES (PRESERVED) --- */
         :root { --primary-red: #960b15; --cream: #fdfcd7; --orange-btn: #cf6828; --text-color: #4a4a4a; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { 
@@ -41,12 +41,9 @@
             position: relative;
             width: 350px;
             height: 350px;
-            /* background-color: white; */
             border-radius: 50%;
-            /* border: 4px solid #d4af37; */
             margin-bottom: 40px;
             overflow: hidden;
-            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -83,28 +80,31 @@
         <h2 class="username-title">@ssgctuac</h2>
         <p class="sub-text">Your voice matters!</p>
 
-        <div class="message-container">
-            <textarea id="messageInput" placeholder="send us anonymous messages..."></textarea>
-            
-            <input type="file" id="fileUpload" style="display: none;">
+        <form id="anonMessageForm" action="process_messages.php" method="POST" enctype="multipart/form-data">
+            <div class="message-container">
+                <textarea id="messageInput" name="message_text" placeholder="send us anonymous messages..."></textarea>
+                
+                <input type="file" id="fileUpload" name="attachment" style="display: none;">
 
-            <div class="input-icons">
-                <i class="fa-solid fa-hashtag" id="hashBtn" title="Add Hashtag"></i>
-                <i class="fa-solid fa-paperclip" id="attachBtn" title="Attach File"></i>
+                <div class="input-icons">
+                    <i class="fa-solid fa-hashtag" id="hashBtn" title="Add Hashtag"></i>
+                    <i class="fa-solid fa-paperclip" id="attachBtn" title="Attach File"></i>
+                </div>
+
+                <div class="hashtag-menu" id="hashMenu">
+                    <div class="tag-option" onclick="addTag('Concern')">#Concern</div>
+                    <div class="tag-option" onclick="addTag('Complaint')">#Complaint</div>
+                    <div class="tag-option" onclick="addTag('Query')">#Query</div>
+                </div>
             </div>
 
-            <div class="hashtag-menu" id="hashMenu">
-                <div class="tag-option" onclick="addTag('Concern')">#Concern</div>
-                <div class="tag-option" onclick="addTag('Complaint')">#Complaint</div>
-                <div class="tag-option" onclick="addTag('Query')">#Query</div>
-            </div>
-        </div>
+            <div class="file-display" id="fileNameDisplay"></div>
 
-        <div class="file-display" id="fileNameDisplay"></div>
+            <p class="disclaimer">This message will be sent anonymously</p>
 
-        <p class="disclaimer">This message will be sent anonymously</p>
-
-        <button class="btn-send" onclick="sendMessage()">Send!</button>
+            <button class="btn-send" type="submit" onclick="return validateAndSubmit(event)">Send!</button>
+        </form>
+        
     </div>
 
     <div class="footer">
@@ -134,16 +134,13 @@
         });
 
         // 2. Add Text to Box
-        function addTag(tagName) {
+        window.addTag = function(tagName) { 
             const tagText = `#${tagName}`;
-            // Only add if not already in the text to prevent duplicates
             if (!textarea.value.includes(tagText)) {
                 if (textarea.value.length > 0 && !textarea.value.endsWith(' ')) textarea.value += ' ';
                 textarea.value += tagText + ' ';
             }
-            // Note: We do NOT save the tag to a list here anymore.
-            // We wait until the user clicks "Send".
-        }
+        };
 
         // 3. File Logic
         attachBtn.addEventListener('click', () => fileUpload.click());
@@ -152,59 +149,26 @@
             if (this.files && this.files[0]) {
                 fileNameDisplay.innerHTML = `<i class="fa-solid fa-check"></i> Attached: ${this.files[0].name}`;
                 attachBtn.style.color = "var(--primary-red)";
+            } else {
+                fileNameDisplay.innerHTML = "";
+                attachBtn.style.color = "";
             }
         });
 
-        // 4. SEND LOGIC (The Fix is Here)
-        function sendMessage() {
-            const msgText = textarea.value;
+        // 4. CLIENT-SIDE VALIDATION & SUBMISSION
+        window.validateAndSubmit = function(event) {
+            const msgText = textarea.value.trim();
             const file = fileUpload.files[0];
 
-            if (msgText.trim() === "" && !file) {
+            if (msgText === "" && !file) {
                 alert("Please type a message or attach a file!");
-                return;
+                event.preventDefault(); // Stop form submission
+                return false;
             }
-
-            const btn = document.querySelector('.btn-send');
-            const originalText = btn.innerText;
-            btn.innerText = "Sending...";
-
-            setTimeout(() => {
-                // --- DYNAMIC TAG DETECTION ---
-                // We check the FINAL text to see what tags are actually inside it.
-                // This fixes the issue where you deleted the text but the tag remained.
-                const finalTags = [];
-                
-                if (msgText.includes('#Concern')) finalTags.push('Concern');
-                if (msgText.includes('#Complaint')) finalTags.push('Complaint');
-                if (msgText.includes('#Query')) finalTags.push('Query');
-
-                // --- SAVE TO DATABASE ---
-                let allMessages = JSON.parse(localStorage.getItem('sg_messages')) || [];
-
-                const newMessage = {
-                    id: Date.now(),
-                    text: msgText,
-                    tags: finalTags, // Use the dynamically detected tags
-                    hasImage: !!file,
-                    date: new Date().toLocaleDateString()
-                };
-
-                allMessages.unshift(newMessage);
-                localStorage.setItem('sg_messages', JSON.stringify(allMessages));
-
-                // Reset
-                textarea.value = "";
-                fileNameDisplay.innerHTML = "";
-                fileUpload.value = ""; 
-                attachBtn.style.color = ""; 
-                
-                btn.innerText = originalText;
-                
-                window.location.href = 'message-sent.html';
-            }, 800);
-        }
+            
+            // If validation passes, the form submits to process_message.php
+            return true;
+        };
     </script>
-
 </body>
 </html>
