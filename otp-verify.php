@@ -7,6 +7,7 @@ $username = "root";
 $password = "";           
 $dbname = "Campus_Connect"; 
 
+
 // Redirect URLs
 $verification_page = "otp-verify.html";
 $reset_page = "reset-password.html"; 

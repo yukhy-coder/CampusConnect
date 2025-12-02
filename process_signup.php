@@ -9,6 +9,7 @@ error_reporting(E_ALL);
 // =================================================================
 
 
+
 // 1. DATABASE CONNECTION DETAILS (CRITICAL: VERIFY THESE!)
 $servername = "localhost";
 $username = "root";       

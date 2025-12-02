@@ -8,6 +8,7 @@ $dbname = "Campus_Connect";
 $conn = new mysqli($servername, $username, $password, $dbname);
 $messages = [];
 
+
 if (!$conn->connect_error) {
     // Fetch all anonymous messages, newest first
     $sql = "SELECT message_text, tags, attachment_link, created_at FROM AnonymousMessages ORDER BY message_id DESC";
