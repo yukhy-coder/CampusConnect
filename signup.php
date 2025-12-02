@@ -1,3 +1,92 @@
+<?php
+// =================================================================
+// 0. PHP DATABASE HANDLING AND DEBUGGING BLOCK
+// This runs BEFORE the HTML is sent to the browser.
+// =================================================================
+
+// Display errors for troubleshooting (MUST BE REMOVED after successful testing!)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// 1. DATABASE CONNECTION DETAILS (CRITICAL: VERIFY THESE!)
+$servername = "localhost";
+$username = "root";       
+$password = "";           // CHECK: Use the correct password for your XAMPP root user
+$dbname = "Campus_Connect"; // CHECK: Must match the database name exactly!
+
+$signup_page = "signup.php"; // Self-referencing file
+$login_page = "login.html";
+$errorMessage = "";
+$successRedirect = false; 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    // 3. CAPTURE AND CLEAN INPUT DATA
+    $fullname = trim($_POST['fullname'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $position = trim($_POST['position'] ?? ''); // Capturing position
+    $raw_password = $_POST['password'] ?? ''; 
+
+    // Basic server-side validation 
+    if (empty($fullname) || empty($email) || empty($position) || empty($raw_password)) {
+        $errorMessage = "All fields are required.";
+    } else {
+        // 4. HASH THE PASSWORD
+        $hashed_password = password_hash($raw_password, PASSWORD_DEFAULT);
+
+        // 5. DETERMINE USER ROLE (Matches your SQL ENUM: 'admin' or 'officer')
+        $db_role = 'officer'; 
+        $lower_position = strtolower($position);
+
+        if (strpos($lower_position, 'admin') !== false) {
+            $db_role = 'admin';
+        } 
+        
+        // 6. CONNECT TO THE DATABASE
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        // CRITICAL CHECK 1: Database Connection Failure
+        if ($conn->connect_error) {
+            die("❌ Connection to MySQL failed. Error: " . $conn->connect_error);
+        }
+        
+        // 7. PREPARE SQL INSERT STATEMENT - TARGETING 'users' TABLE
+        // Columns: fullname, email, password, role, is_approved (assuming your new SQL structure)
+        $sql = "INSERT INTO usersinfo (fullname, email, password, role, is_approved) 
+                VALUES (?, ?, ?, ?, 0)";
+                
+        $stmt = $conn->prepare($sql);
+        
+        // CRITICAL CHECK 2: Prepared Statement Failure
+        if ($stmt === false) {
+            $conn->close();
+            die("❌ SQL PREPARATION FAILED. Check if table 'users' and columns exist. Error: " . $conn->error);
+        }
+        
+        // BIND PARAMETERS: fullname, email, HASHED password, DB ENUM role
+        $stmt->bind_param("ssss", $fullname, $email, $hashed_password, $db_role);
+        
+        // 8. EXECUTE AND CHECK FOR ERRORS
+        if ($stmt->execute()) {
+            // SUCCESS: Data stored. Set flag to trigger JS alert/redirect.
+            $successRedirect = true; 
+            $stmt->close();
+            $conn->close();
+        } else {
+            // CRITICAL CHECK 3: Execution Failure
+            if ($conn->errno == 1062) {
+                $errorMessage = "That email address is already registered. Please sign in.";
+            } else {
+                $errorMessage = "Insertion failed. MySQL Error: " . $stmt->error;
+            }
+            $stmt->close();
+            $conn->close();
+        }
+    }
+}
+// Omit closing tag ?> to prevent header output errors
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,14 +168,14 @@
             object-fit: cover;
         }
 
-        /* Form Inputs & SELECT styling */
+        /* Form Inputs */
         .form-group {
             width: 100%;
             margin-bottom: 15px;
             position: relative;
         }
 
-        input, select { /* ADDED: select to input selector */
+        input {
             width: 100%;
             padding: 15px;
             border-radius: 10px;
@@ -98,7 +187,7 @@
         }
         
         /* CSS for Validation Feedback */
-        input.error-border, select.error-border { /* ADDED: select to error selector */
+        input.error-border {
             border: 2px solid var(--error-color);
         }
 
@@ -221,7 +310,7 @@
             <img src="images/SSGLOGO.png" alt="Logo" onerror="this.style.display='none'">
         </div>
         
-        <form action="process_signup.php" method="POST" id="signupForm">
+        <form action="signup.php" method="POST" id="signupForm">
 
             <div class="form-group">
                 <input type="email" id="emailInput" name="email" placeholder="Email" required>
@@ -232,49 +321,7 @@
             </div>
 
             <div class="form-group">
-                <select id="positionInput" name="position" required>
-                    <option value="" disabled selected>Select Position</option>
-                    <option value="PRESIDENT">PRESIDENT</option>
-                    <option value="VICE PRESIDENT">VICE PRESIDENT</option>
-                    <option value="COED SENATOR">COED SENATOR</option>
-                    <option value="CAS SENATOR">CAS SENATOR</option>
-                    <option value="COTE SENATOR">COTE SENATOR</option>
-                    <option value="CHMT SENATOR">CHMT SENATOR</option>
-                    <option value="CAFE SENATOR">CAFE SENATOR</option>
-                    <option value="BSED-MATH HR">BSED-MATH HR</option>
-                    <option value="BEED HR">BEED HR</option>
-                    <option value="BTLED HR">BTLED HR</option>
-                    <option value="BSA HR">BSA HR</option>
-                    <option value="BSF HR">BSF HR</option>
-                    <option value="BSES HR">BSES HR</option>
-                    <option value="BSP HR">BSP HR</option>
-                    <option value="BAEL HR">BAEL HR</option>
-                    <option value="BALIT HR">BALIT HR</option>
-                    <option value="BSIE HR">BSIE HR</option>
-                    <option value="BSIT HR">BSIT HR</option>
-                    <option value="BIT-AUTOMOTIVE HR">BIT-AUTOMOTIVE HR</option>
-                    <option value="BIT-COMPUTER TECHNOLOGY HR">BIT-COMPUTER TECHNOLOGY HR</option>
-                    <option value="BIT-ELECTRONICS HR">BIT-ELECTRONICS HR</option>
-                    <option value="BIT-GARMENTS HR">BIT-GARMENTS HR</option>
-                    <option value="BIT-DRAFTING HR">BIT-DRAFTING HR</option>
-                    <option value="BSTH HR">BSTH HR</option>
-                    <option value="BSHM HR">BSHM HR</option>
-                    <option value="EXECUTIVE SECRETARY">EXECUTIVE SECRETARY</option>
-                    <option value="DEPUTY EXECUTIVE SECRETARY">DEPUTY EXECUTIVE SECRETARY</option>
-                    <option value="PRESS SECRETARY">PRESS SECRETARY</option>
-                    <option value="DEPUTY PRESS SECRETARY">DEPUTY PRESS SECRETARY</option>
-                    <option value="EXECUTIVE SECRETARY OF FINANCE">EXECUTIVE SECRETARY OF FINANCE</option>
-                    <option value="DEPUTY SECRETARY OF FINANCE">DEPUTY SECRETARY OF FINANCE</option>
-                    <option value="SECRETARY ON AUDIT">SECRETARY ON AUDIT</option>
-                    <option value="MASS MEDIA DIRECTOR">MASS MEDIA DIRECTOR</option>
-                    <option value="GRAPHICS COMMITTEE">GRAPHICS COMMITTEE</option>
-                    <option value="DOCUMENTATION OFFICER">DOCUMENTATION OFFICER</option>
-                    <option value="TECHNICAL COMMITTEE">TECHNICAL COMMITTEE</option>
-                    <option value="EVENTS AND PLANNING COMMITTEE">EVENTS AND PLANNING COMMITTEE</option>
-                    <option value="DESIGN OFFICER">DESIGN OFFICER</option>
-                    <option value="LOGISTICS COMMITTEE">LOGISTICS COMMITTEE</option>
-                    <option value="LINKAGE COMMITTEE">LINKAGE COMMITTEE</option>
-                </select>
+                <input type="text" id="roleInput" name="role" placeholder="Role (Officer or Admin)" required>
             </div>
 
             <div class="form-group">
@@ -300,7 +347,14 @@
             <button type="submit" class="btn-signup" id="signupButton">Sign up</button>
         </form>
         
-        <div id="validationMessage"></div>
+        <div id="validationMessage">
+            <?php 
+                // Display PHP error messages if the script failed to store data
+                if (!empty($errorMessage)) {
+                    echo htmlspecialchars($errorMessage);
+                }
+            ?>
+        </div>
 
         <div class="footer-text">
             Do you have already account? <a href="login.html">Sign in</a>
@@ -315,23 +369,27 @@
             const messageDiv = document.getElementById('validationMessage');
 
             if (status === 'success') {
-                // Show success alert and redirect
+                // SUCCESS: Show alert and redirect
                 alert("Account created successfully!");
                 window.location.href = 'login.html'; 
                 return;
             } else if (status === 'duplicate') {
                 messageDiv.textContent = "That email address is already registered. Please sign in.";
-            } else if (status === 'db_error') {
-                messageDiv.textContent = "Server error: Database insertion failed. Try again.";
+            } else if (status === 'db_error' || status === 'insertfail') {
+                messageDiv.textContent = "Server error: Database operation failed. Please ensure XAMPP is running.";
             } else if (status === 'fields_error') {
                 messageDiv.textContent = "Please fill out all fields.";
+            }
+            // Clear the status parameter from the URL for a cleaner look
+            if (status) {
+                history.replaceState(null, '', window.location.pathname);
             }
         });
 
         // 1. Get all Input and Validation Elements
         const emailInput = document.getElementById('emailInput');
         const fullnameInput = document.getElementById('fullnameInput');
-        const positionInput = document.getElementById('positionInput'); // Select element now
+        const roleInput = document.getElementById('roleInput'); // Changed from positionInput
         const passwordInput = document.getElementById('passwordInput');
         const togglePassword = document.querySelector('#togglePassword');
         const signupButton = document.getElementById('signupButton');
@@ -369,10 +427,9 @@
             return /^[a-zA-Z\s-',.]+$/.test(name); 
         }
 
-        // NOTE: This function is now redundant as the dropdown restricts input, 
-        // but we keep the structure for compatibility.
-        function isValidPosition(position) {
-            return position.trim() !== ''; // Basic check: ensures user selects an option
+        // Allows letters, spaces, and hyphens (no numbers/symbols).
+        function isValidRole(role) {
+            return /^[a-zA-Z\s-]+$/.test(role);
         }
 
         // --- END VALIDATION FUNCTIONS ---
@@ -416,7 +473,7 @@
             let errorMessage = 'Please fill out all required fields.'; 
 
             // Clear error styles
-            const allInputs = [emailInput, fullnameInput, positionInput, passwordInput];
+            const allInputs = [emailInput, fullnameInput, roleInput, passwordInput]; // Updated input list
             allInputs.forEach(input => input.classList.remove('error-border')); 
 
             // --- A. EMAIL VALIDATION ---
@@ -441,11 +498,15 @@
                 if (!firstErrorInput) { firstErrorInput = fullnameInput; errorMessage = 'Fullname must only contain letters, spaces, hyphens, apostrophes, commas, or periods.'; }
             }
 
-            // --- C. POSITION VALIDATION (Checking if default option is selected) ---
-            if (positionInput.value === '' && isValid) {
+            // --- C. ROLE VALIDATION (Changed from Position) ---
+            if (roleInput.value.trim() === '' && isValid) {
                 isValid = false;
-                positionInput.classList.add('error-border');
-                if (!firstErrorInput) { firstErrorInput = positionInput; errorMessage = 'Please select a position.'; }
+                roleInput.classList.add('error-border');
+                if (!firstErrorInput) { firstErrorInput = roleInput; errorMessage = 'Role field cannot be empty.'; }
+            } else if (!isValidRole(roleInput.value.trim()) && isValid) {
+                isValid = false;
+                roleInput.classList.add('error-border');
+                if (!firstErrorInput) { firstErrorInput = roleInput; errorMessage = 'Role must only contain letters, spaces, or hyphens (no numbers or symbols).'; }
             }
 
             // --- D. PASSWORD VALIDATION ---
