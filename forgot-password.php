@@ -5,6 +5,7 @@
 // 0. CONFIGURATION
 // =================================================================
 
+
 // Database Settings (CRITICAL: VERIFY THESE!)
 $servername = "localhost";
 $username = "root";       
