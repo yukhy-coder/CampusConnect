@@ -15,15 +15,15 @@
         .header-left { display: flex; align-items: center; gap: 15px; }
         .header-logo { width: 60px; height: 60px;  border-radius: 50%;  overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .header-logo img { width: 100%; height: 100%; object-fit: cover; }
-        .header-title { font-weight: 600; font-size: 18px; letter-spacing: 0.5px; }
+        .header-title { font-weight: 600; font-size: 18px; letter-spacing: 0.5px; color: var(--cream);}
         .header-right { display: flex; align-items: center; gap: 20px; }
         .search-bar { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 8px 15px; display: flex; align-items: center; width: 250px; }
-        .search-bar input { background: transparent; border: none; color: white; outline: none; width: 100%; margin-left: 10px; }
-        .search-bar i { color: white; opacity: 0.8; }
+        .search-bar input { background: transparent; border: none; color: var(--cream); outline: none; width: 100%; margin-left: 10px; }
+        .search-bar i { color: var(--cream); opacity: 0.8; }
         .profile-icon { width: 35px; height: 35px; background-color: #ff6b6b; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;}
         
         .main-container { display: flex; margin-top: 70px; height: calc(100vh - 70px); }
-        .sidebar { width: var(--sidebar-width); background-color: white; border-right: 1px solid #ddd; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
+        .sidebar { width: var(--sidebar-width); min-width: 350px; background-color: white; border-right: 1px solid #ddd; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
         
         .calendar-section { padding: 20px; background-color: white; min-height: 349px;}
         .cal-header { color: var(--primary-red); font-weight: bold; font-size: 20px; text-align: center; margin-bottom: 20px; text-transform: uppercase; }
@@ -52,10 +52,10 @@
         right: 154px;
         }
         .events-header { background-color: var(--primary-red); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .events-list { background-color: var(--cream); flex-grow: 1; padding: 15px; display: flex; flex-direction: column; gap: 10px; overflow: auto;}
+        .events-list { background-color: var(--cream); flex-grow: 1; padding: 15px; display: flex; flex-direction: column; gap: 10px; overflow: auto; scrollbar-width: none;}
         .event-card { background-color: var(--primary-red); color: white; padding: 12px 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         
-        .feed-container { flex-grow: 1; background-color: #f4f4f4; padding: 30px; overflow-y: auto; padding-top: 0px; padding-right: 0px;; }
+        .feed-container { flex-grow: 1; background-color: #f4f4f4; padding: 30px; overflow-y: auto; padding-top: 0px; padding-right: 0px; scrollbar-width: none; }
         .post-card { background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 100%; }
         .post-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .user-info { display: flex; align-items: center; gap: 12px; }
@@ -205,8 +205,9 @@
 
         .main-dropdown-menu {
             position: absolute;
-            top: 50px; /* Pushes it down below the header */
-            right: 0;
+            top: 47px;
+            right: -31px;
+            border-top-right-radius: 0px !important;
             width: 260px; /* Wider than the post menu */
             background-color: white;
             border-radius: 12px;
@@ -365,8 +366,9 @@
         /* --- NOTIFICATION STYLES --- */
         .notif-dropdown {
             position: absolute;
-            top: 60px; /* Pushes it below the header */
-            right: 80px; /* Positions it to the left of the hamburger menu */
+            top: 70px;
+            right: -1px;
+            border-top-right-radius: 0px !important;
             width: 350px;
             background-color: white;
             border-radius: 12px;
@@ -374,7 +376,6 @@
             display: none; /* Hidden by default */
             z-index: 2000;
             overflow: hidden;
-            border: 1px solid #eee;
         }
         .notif-dropdown.show { display: block; animation: fadeIn 0.2s; }
 
@@ -386,7 +387,7 @@
             font-size: 16px;
         }
 
-        .notif-list { max-height: 400px; overflow-y: auto; }
+        .notif-list { max-height: 400px; overflow-y: auto; scrollbar-width: none;}
 
         .notif-item {
             display: flex; align-items: center; gap: 15px; padding: 15px;
@@ -428,7 +429,7 @@
             </div>
             
             <div class="header-menu-container">
-                <i class="fa-solid fa-bars" id="mainMenuBtn" style="font-size:20px; cursor:pointer;"></i>
+                <i class="fa-solid fa-bars" id="mainMenuBtn" style="font-size:20px; cursor:pointer; color: var(--cream);"></i>
                 
                 <div class="main-dropdown-menu" id="mainMenu">
 
