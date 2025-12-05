@@ -6,8 +6,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 $id = $data['id'];
 
 if ($id) {
-    // Set is_approved to 1
-    $stmt = $conn->prepare("UPDATE users SET is_approved = 1, approved_at = NOW() WHERE user_id = ?");
+    $stmt = $conn->prepare("DELETE FROM events WHERE event_id = ?");
     $stmt->bind_param("i", $id);
     
     if ($stmt->execute()) {
