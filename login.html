@@ -90,18 +90,18 @@
         }
 
         input {
-            width: 282px;
+            width: 285px;
             padding: 15px;
             border-radius: 10px;
             border: none;
             background-color: var(--cream);
-            color: var(--text-color);
+            color: #AC1217;
             font-size: 14px;
             outline: none;
         }
 
         input::placeholder {
-            color: #888;
+            color: #AC1217;
         }
 
         /* Eye Icon for Password */
@@ -271,6 +271,7 @@
                     // Safety catch if a user has a role like 'guest' or 'student' which shouldn't exist
                     messageDiv.textContent = 'Access Denied: Role not authorized.';
                     messageDiv.style.color = 'white';
+                    messageDiv.style.textAlign = 'center';
                     if(submitBtn) submitBtn.innerText = "Sign in";
                 }
             } else {

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Government - Welcome</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alkalami&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary-red: #960b15;    /* The deep red background */
+            --cream: #fdfcd7;          /* The top curve and input color */
+            --orange-btn: #cf6828;     /* The button color */
+            --text-color: #4a4a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* Default font, will be overridden by specific classes below */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-red);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden; 
+            padding-bottom: 50px;
+        /* 1. Hide scrollbar for IE and Edge */
+            -ms-overflow-style: none;  
+            
+        }
+
+        /* 3. Hide scrollbar for Chrome, Safari, and Opera (WebKit) */
+        body::-webkit-scrollbar {
+            width: 0; 
+            height: 0;
+            display: none; 
+        }
+        /* 1. The Top Curved Background */
+        .header-curve {
+            position: absolute;
+            top: -55px;
+            left: 0;
+            width: 100%;
+            height: 35%; /* Adjusts how far down the curve goes */
+            background-color: #fffacb;
+            border-bottom-left-radius: 99% 77%;
+            border-bottom-right-radius: 99% 77%;
+            z-index: 1;
+        }
+
+        /* 2. The Main Content Container */
+        .login-wrapper {
+            position: relative;
+            z-index: 2; /* Sits on top of the curve */
+            width: 100%;
+            max-width: 900px; 
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            top: -39px;  
+        }
+
+        /* 3. Logo Styling */
+        .logo-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            /* background-color: white; */ 
+            border-radius: 50%;
+            /* border: 4px solid #d4af37; */
+            margin-bottom: 40px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 44px;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- CONTENT STYLING --- */
+
+        .welcome-title {
+            color: #FEFACB;
+            font-family: 'Alkalami', serif; 
+            font-size: 32px; 
+            font-weight: 400; 
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            margin-top: 20px; 
+        }
+
+        .welcome-subtitle {
+            color: #FEFACB;
+            font-family: 'Poppins', sans-serif; 
+            font-size: 14px;
+            text-align: center;
+            max-width: 500px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .btn-get-started {
+            padding: 12px 40px;
+            border-radius: 25px;
+            border: none;
+            background-color: var(--orange-btn);
+            color: var(--cream);
+            font-family: 'Poppins', sans-serif; 
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            text-decoration: none; 
+            display: inline-block; 
+            /* Added margin bottom since social icon is gone */
+            margin-bottom: 40px; 
+        }
+        
+        .btn-get-started:hover {
+            transform: scale(1.05); 
+        }
+
+        /* Social Icon CSS removed */
+
+        .section-header {
+            font-family: 'Alkalami', serif; 
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--cream);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .hero-image {
+            width: 100%;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .intro-text {
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif; 
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            padding: 0 20px;
+            max-width: 800px;
+        }
+
+        .info-box {
+            border: 2px solid rgba(253, 252, 215, 0.4);
+            padding: 40px;
+            width: 100%;
+            color: #ffffff;
+        }
+
+        .info-block {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .info-block h3 {
+            color: var(--cream);
+            font-family: 'Alkalami', serif; 
+            font-size: 1.2rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .info-block p, .info-block li {
+            font-family: 'Poppins', sans-serif; 
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .list-container {
+            display: inline-block;
+            text-align: left;
+        }
+        
+        ul, ol {
+            padding-left: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-curve"></div>
+
+    <div class="login-wrapper">
+        
+        <div class="logo-container">
+            <img src="images/SSGLOGO.png" alt="University Logo" onerror="this.src='https://via.placeholder.com/350?text=LOGO'">
+        </div>
+
+        <h1 class="welcome-title">WELCOME HONORABLE!</h1>
+        
+        <p class="welcome-subtitle">
+            View all events, students suggestions, complaints, concerns, and many more.
+        </p>
+
+        <a href="signup.html" class="btn-get-started">GET STARTED</a>
+
+        <h2 class="section-header">Vision, Mission, Goal & Outcome</h2>
+
+        <div class="hero-image">
+            <img src="images/SSGGroupPhoto.jpg" alt="Students Running" onerror="this.src='https://via.placeholder.com/900x450?text=Insert+Picture+Here'">
+        </div>
+
+        <p class="intro-text">
+            Our future is shaped by the principles that guide us today—our Vision, Mission, Goals, and Outcomes, which reflect our commitment to excellence, inclusivity, and sustainable development.
+        </p>
+
+        <div class="info-box">
+            
+            <div class="info-block">
+                <h3>VISION</h3> 
+                <p>CTU as a Premier, Inclusive, Globally-Recognized Research and Innovation Smart, Community Responsive and Sustainable Technological University.</p> 
+            </div>
+
+            <div class="info-block">
+                <h3>MISSION</h3>
+                <p>The University shall primarily provide leading-edge degree programs, innovative professional, entrepreneurial, and technical instruction as well as research and extension programs that address both the needs of the region and the nation in the context of the global knowledge economy, Fourth Industrial Revolution, and sustainability.</p>
+            </div>
+
+            <div class="info-block">
+                <h3>GOALS</h3>
+                <p>By the end of 2024, CTU will be globally recognized for its quality. Specifically, it will:</p>
+                <div class="list-container">
+                    <ul> 
+                        <li>Obtain a Philippine university system status with a CHED SUC Level V recognition or equivalent.</li>
+                        <li>Be ranked among the Top 10 Universities in the Philippines.</li>
+                        <li>Be included in the list of internationally recognized ranking of universities.</li>
+                        <li>Pursue efforts to pave way for the development of new programs.</li>
+                        <li>Achieve world-class performance and excellence in total quality management.</li>
+                        <li>Lead innovations in the Fifth Industrial Revolution.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <h3>OUTCOME</h3>
+                <div class="list-container">
+                    <ol>
+                        <li>Relevant, effective, and quality education for sustainable growth.</li>
+                        <li>Access to quality education for the underprivileged students.</li>
+                        <li>Relevant research for economic, environmental, and sustainable development.</li>
+                        <li>Expanded community engagement.</li>
+                        <li>Effective and efficient management of resources.</li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
