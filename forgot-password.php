@@ -5,12 +5,11 @@
 // 0. CONFIGURATION
 // =================================================================
 
-
 // Database Settings (CRITICAL: VERIFY THESE!)
 $servername = "localhost";
 $username = "root";       
 $password = "";           
-$dbname = "Campus_Connect"; 
+$dbname = "CampusConnect"; 
 
 // Redirect URLs
 $verification_page = 'otp-verify.html';
@@ -18,7 +17,7 @@ $forgot_page = 'forgot-password.php';
 
 // OTP Settings
 $otp_expiry_seconds = 300; // 5 minutes validity
-$sender_email = 'laxusmachica@gmail.com'; 
+$sender_email = 'villegaskhyan@gmail.com'; 
 
 
 // 4. FUNCTION TO SEND MAIL (Uses built-in PHP mail() which relies on XAMPP config)

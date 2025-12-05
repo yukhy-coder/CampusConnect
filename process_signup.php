@@ -9,12 +9,11 @@ error_reporting(E_ALL);
 // =================================================================
 
 
-
 // 1. DATABASE CONNECTION DETAILS (CRITICAL: VERIFY THESE!)
 $servername = "localhost";
 $username = "root";       
 $password = "";           // CHECK: Use the correct password for your XAMPP root user
-$dbname = "Campus_Connect"; // CHECK: Must match the database name exactly!
+$dbname = "CampusConnect"; // CHECK: Must match the database name exactly!
 
 // Redirect URLs
 $signup_page = "signup.html";

@@ -9,12 +9,11 @@ error_reporting(E_ALL);
 // =================================================================
 
 
-
 // 1. DATABASE CONNECTION DETAILS (CRITICAL: VERIFY THESE!)
 $servername = "localhost";
 $username = "root";       
 $password = "";           
-$dbname = "Campus_Connect"; // VERIFY THIS NAME
+$dbname = "CampusConnect"; // VERIFY THIS NAME
 
 // 2. EMAIL/OTP CONFIGURATION
 $verification_page = 'otp-verify.html';
