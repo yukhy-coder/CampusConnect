@@ -6,7 +6,6 @@
     <title>Student Government Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        
         /* --- CSS STYLES --- */
         :root {
             --primary-red: #960b15;    /* The deep red background */
@@ -21,40 +20,46 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
             background-color: var(--primary-red);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow: hidden; /* Prevents scrollbars */
+            overflow: hidden; 
         }
 
-        /* 1. The Top Curved Background */
+
+        /* Header Curve */
         .header-curve {
             position: absolute;
             top: -55px;
             left: 0;
             width: 100%;
-            height: 35%; /* Adjusts how far down the curve goes */
-            background-color: #fffacb;
+            height: 35%; 
+            background-color: var(--cream);
             border-bottom-left-radius: 99% 77%;
             border-bottom-right-radius: 99% 77%;
             z-index: 1;
         }
-
+        #loginMessage {
+            margin-top: 10px;
+            color: var(--cream);
+            font-size: 14px;
+        }
         /* 2. The Main Content Container */
         .login-wrapper {
             position: relative;
-            z-index: 2; /* Sits on top of the curve */
+            z-index: 2;
             width: 100%;
             max-width: 400px;
             padding: 20px;
+            padding-bottom: 0px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            top: -39px;  
+            top: -39px;
         }
 
         /* 3. Logo Styling */
@@ -62,12 +67,9 @@
             position: relative;
             width: 350px;
             height: 350px;
-            /* background-color: white; */
             border-radius: 50%;
-            /* border: 4px solid #d4af37; */
             margin-bottom: 40px;
             overflow: hidden;
-            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -88,18 +90,18 @@
         }
 
         input {
-            width: 100%;
+            width: 282px;
             padding: 15px;
             border-radius: 10px;
             border: none;
             background-color: var(--cream);
-            color: #AC1217;
+            color: var(--text-color);
             font-size: 14px;
             outline: none;
         }
 
         input::placeholder {
-            color: #AC1217;
+            color: #888;
         }
 
         /* Eye Icon for Password */
@@ -117,7 +119,7 @@
             display: flex;
             justify-content: space-between;
             width: 100%;
-            color: #fffacb;
+            color: white;
             font-size: 12px;
             margin-bottom: 25px;
         }
@@ -130,7 +132,7 @@
         }
 
         .forgot-pass {
-            color: #fffacb;
+            color: white;
             text-decoration: none;
         }
 
@@ -145,7 +147,7 @@
             border-radius: 25px;
             border: none;
             background-color: var(--orange-btn);
-            color: #fffacb;
+            color: white;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -160,13 +162,13 @@
         /* 7. Footer */
         .footer-text {
             margin-top: 50px;
-            color: #fffacb;
+            color: white;
             font-size: 12px;
             text-align: center;
         }
 
         .footer-text a {
-            color: #fffacb;
+            color: white;
             text-decoration: underline;
             font-weight: bold;
         }
@@ -180,101 +182,112 @@
         <div class="logo-container">
             <img src="images/SSGLOGO.png" alt="University Logo" onerror="this.style.display='none'">
         </div>
+        
+        <form action="login_process.php" method="POST" id="loginForm">
 
-        <div class="form-group">
-            <input type="email" id="email" placeholder="Email" required>
-        </div>
+            <div class="form-group">
+                <input type="email" id="emailInput" name="email" placeholder="Email" required>
+            </div>
 
-        <div class="form-group">
-            <input type="password" id="passwordInput" placeholder="Password" required>
-            <i class="fa-solid fa-eye-slash password-toggle" id="togglePassword"></i>
-        </div>
+            <div class="form-group">
+                <input type="password" id="passwordInput" name="password" placeholder="Password" required>
+                <i class="fa-solid fa-eye-slash password-toggle" id="togglePassword"></i>
+            </div>
 
-        <div class="options-row">
-            <label class="remember-me">
-                <input type="checkbox" id="rememberMe" style="width: auto; margin:0;"> Remember me
-            </label>
-            <a href="forgot-password.html" class="forgot-pass">Forgot password?</a>
-        </div>
+            <div class="options-row">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember" style="width: auto; margin:0;"> Remember me
+                </label>
+                <a href="forgot-password.html" class="forgot-pass">Forgot password?</a>
+            </div>
 
-        <button class="btn-signin" onclick="handleLogin()">Sign in</button>
-
-        <div class="footer-text">
+            <button type="submit" class="btn-signin">Sign in</button>
+        </form>
+        <div id="loginMessage"></div> <div class="footer-text">
             You don't have an account? <a href="signup.html">Sign up</a>
         </div>
     </div>
 
     <script>
-        /* --- JAVASCRIPT FUNCTIONALITY --- */
+    /* --- JAVASCRIPT FUNCTIONALITY --- */
+    
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordInput = document.querySelector('#passwordInput');
+    const loginForm = document.querySelector('#loginForm');
+    const emailInput = document.querySelector('#emailInput');
+    const messageDiv = document.querySelector('#loginMessage');
+    const submitBtn = document.querySelector('.btn-signin') || document.querySelector('button[type="submit"]');
+
+    // 1. Password Visibility Toggle
+    togglePassword.addEventListener('click', function (e) {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+    
+    // 2. Handle Form Submission
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault(); 
+
+        // Clear errors
+        emailInput.classList.remove('error-border');
+        passwordInput.classList.remove('error-border');
+        messageDiv.textContent = '';
         
-        const togglePassword = document.querySelector('#togglePassword');
-        const password = document.querySelector('#passwordInput');
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
 
-        togglePassword.addEventListener('click', function (e) {
-            // 1. Toggle the type attribute
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            
-            // 2. Toggle the eye icon class (slash vs no slash)
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-
-        // Login Function
-        async function handleLogin() {
-            const email = document.getElementById('email').value;
-            const passwordInput = document.getElementById('passwordInput').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
-
-            // Validate inputs
-            if (!email || !passwordInput) {
-                alert('Please fill in all fields');
-                return;
-            }
-
-            // Create form data
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', passwordInput);
-            formData.append('remember_me', rememberMe);
-
-            try {
-                const response = await fetch('login.php', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                console.log('Response status:', response.status);
-                
-                const text = await response.text();
-                console.log('Response text:', text);
-                
-                const result = JSON.parse(text);
-
-                if (result.success) {
-                    alert(result.message);
-                    // Redirect based on role
-                    if (result.role === 'admin') {
-                        window.location.href = 'admin-dashboard.html';
-                    } else {
-                        window.location.href = 'officer-dashboard.html';
-                    }
-                } else {
-                    alert('Error: ' + result.message);
-                }
-            } catch (error) {
-                alert('An error occurred: ' + error.message);
-                console.error('Full error:', error);
-            }
+        if (email === '' || password === '') {
+            messageDiv.textContent = 'Email and password are required.';
+            messageDiv.style.color = 'white'; 
+            if (email === '') emailInput.classList.add('error-border');
+            if (password === '') passwordInput.classList.add('error-border');
+            return;
         }
 
-        // Allow Enter key to submit
-        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleLogin();
+        if(submitBtn) submitBtn.innerText = "Signing in...";
+
+        fetch('login_process.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // --- SUCCESS: STRICT ROLE REDIRECTION ---
+                const role = data.role ? data.role.toLowerCase() : '';
+
+                if (role === 'admin') {
+                    // Admin goes to Analytics/Super Dashboard
+                    window.location.href = 'dashboard.html'; 
+                } 
+                else if (role === 'officer') {
+                    // Officer goes to the Main Feed/Events Dashboard
+                    window.location.href = 'officer_dashboard.html';
+                } 
+                else {
+                    // Safety catch if a user has a role like 'guest' or 'student' which shouldn't exist
+                    messageDiv.textContent = 'Access Denied: Role not authorized.';
+                    messageDiv.style.color = 'white';
+                    if(submitBtn) submitBtn.innerText = "Sign in";
+                }
+            } else {
+                // --- ERROR ---
+                messageDiv.textContent = data.message || 'Login failed.';
+                messageDiv.style.color = 'white'; 
+                if(submitBtn) submitBtn.innerText = "Sign in";
             }
+        })
+        .catch(err => {
+            console.error(err);
+            messageDiv.textContent = 'Server connection error.';
+            messageDiv.style.color = 'white';
+            if(submitBtn) submitBtn.innerText = "Sign in";
         });
-    </script>
+    });
+</script>
 
 </body>
 </html>

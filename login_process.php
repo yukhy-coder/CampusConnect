@@ -1,23 +1,18 @@
 <?php
-// Omit closing tag to prevent header output errors
+// 1. START SESSION
+session_start();
 
-// =================================================================
-// 0. TEMPORARY DEBUGGING BLOCK (REMOVE AFTER SUCCESSFUL TESTING!)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-// =================================================================
+// 2. SET TIMEZONE
+date_default_timezone_set('Asia/Manila');
 
-
-
-// 1. DATABASE CONNECTION DETAILS (CRITICAL: VERIFY THESE!)
+// 3. DATABASE CONNECTION
 $servername = "localhost";
 $username = "root";       
-$password = "";           // CHECK: Use the correct password for your XAMPP root user
-$dbname = "Campus_Connect"; // CHECK: Must match the database name exactly!
+$password = "";           
+$dbname = "CampusConnect"; 
 
-// Redirect URLs
-$login_page = "login.html";
+// Set header to JSON
+header('Content-Type: application/json');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
@@ -25,64 +20,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $input_password = $_POST['password'] ?? ''; 
 
     if (empty($email) || empty($input_password)) {
-        header("Location: " . $login_page . "?status=login_failed");
+        echo json_encode(["success" => false, "message" => "Please fill in all fields."]);
         exit();
     }
     
-    // 3. CONNECT TO THE DATABASE
     $conn = new mysqli($servername, $username, $password, $dbname);
 
     if ($conn->connect_error) {
-        error_log("DB Connection Failed: " . $conn->connect_error);
-        header("Location: " . $login_page . "?status=db_error");
+        echo json_encode(["success" => false, "message" => "Database Connection Failed."]);
         exit();
     }
     
-    $sql = "SELECT password, is_approved FROM users WHERE email = ?";
+    // 4. SELECT QUERY
+    $sql = "SELECT user_id, fullname, password, role, is_approved FROM users WHERE email = ?";
     $stmt = $conn->prepare($sql);
-    
-    if ($stmt === false) {
-        error_log("SQL Prepare failed: " . $conn->error);
-        $conn->close();
-        header("Location: " . $login_page . "?status=db_error");
-        exit();
-    }
-    
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
 
-    // 5. VERIFY PASSWORD AND STATUS
+    // 5. VERIFY USER
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
-        $stored_hash = $user['password'];
-        $is_approved = $user['is_approved'];
-
-        // *** SECURE PASSWORD VERIFICATION ***
-        if (password_verify($input_password, $stored_hash)) {
+        
+        if (password_verify($input_password, $user['password'])) {
             
-            // Authentication SUCCESS (NO APPROVAL CHECK)
+            if ($user['is_approved'] == 0) {
+                echo json_encode(["success" => false, "message" => "Account pending approval."]);
+                $conn->close();
+                exit();
+            }
+            
+            // --- SUCCESS: SAVE SESSION DATA ---
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['fullname'] = $user['fullname'];
+            $_SESSION['role'] = $user['role'];
+
+            // 1. Update Last Login
+            $update_sql = "UPDATE users SET last_login = NOW() WHERE user_id = ?";
+            $u_stmt = $conn->prepare($update_sql);
+            $u_stmt->bind_param("i", $user['user_id']);
+            $u_stmt->execute();
+            $u_stmt->close();
+
+            // 2. Insert Activity Log & SAVE ID
+            // Note: We rely on default timestamp for login time
+            $log_sql = "INSERT INTO activity_logs (user_id, action) VALUES (?, 'Login')";
+            $l_stmt = $conn->prepare($log_sql);
+            $l_stmt->bind_param("i", $user['user_id']);
+            
+            if ($l_stmt->execute()) {
+                // *** THIS IS THE MISSING PIECE ***
+                // Save the ID of this log row so we can update it when they logout
+                $_SESSION['current_log_id'] = $conn->insert_id; 
+            }
+            $l_stmt->close();
+
             $conn->close();
-            header("Location: " . $login_page . "?status=login_success"); 
+            
+            echo json_encode(["success" => true, "role" => $user['role']]);
             exit();
 
         } else {
-            // Password incorrect
-            $conn->close();
-            header("Location: " . $login_page . "?status=login_failed");
+            echo json_encode(["success" => false, "message" => "Invalid password."]);
             exit();
         }
     } else {
-        // User (email) not found in the database
-        $conn->close();
-        header("Location: " . $login_page . "?status=login_failed");
+        echo json_encode(["success" => false, "message" => "User not found."]);
         exit();
     }
-
 } else {
-    // If accessed directly without POST data
-    header("Location: " . $login_page);
+    echo json_encode(["success" => false, "message" => "Invalid Request."]);
     exit();
 }
-// Omit closing tag to prevent header output errors
+?>

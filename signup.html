@@ -6,7 +6,7 @@
     <title>Student Government Sign Up</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-
+        /* --- START OF ORIGINAL CSS (Verified Clean) --- */
         :root {
             --primary-red: #960b15;
             --cream: #fdfcd7;
@@ -14,6 +14,7 @@
             --text-color: #4a4a4a;
             --line-inactive: #5c050b; 
             --line-active: #00ff7f; /* Bright Green for success */
+            --error-color: #ff3333; /* Added a color for errors */
         }
 
         * {
@@ -38,7 +39,7 @@
             top: -55px;
             left: 0;
             width: 100%;
-            height: 35%; /* Adjusts how far down the curve goes */
+            height: 35%; 
             background-color: var(--cream);
             border-bottom-left-radius: 99% 77%;
             border-bottom-right-radius: 99% 77%;
@@ -63,12 +64,9 @@
             position: relative;
             width: 350px;
             height: 350px;
-            /* background-color: white; */
             border-radius: 50%;
-            /* border: 4px solid #d4af37; */
             margin-bottom: 40px;
             overflow: hidden;
-            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -81,14 +79,14 @@
             object-fit: cover;
         }
 
-        /* Form Inputs */
+        /* Form Inputs & SELECT styling */
         .form-group {
             width: 100%;
             margin-bottom: 15px;
             position: relative;
         }
 
-        input , select{
+        input, select { /* ADDED: select to input selector */
             width: 100%;
             padding: 15px;
             border-radius: 10px;
@@ -97,6 +95,11 @@
             color: #AC1217;
             font-size: 14px;
             outline: none;
+        }
+        
+        /* CSS for Validation Feedback */
+        input.error-border, select.error-border { /* ADDED: select to error selector */
+            border: 2px solid var(--error-color);
         }
 
         input::placeholder {
@@ -135,17 +138,17 @@
 
         .val-line {
             width: 100%;
-            height: 4px; /* Made slightly thicker to see the color better */
+            height: 4px;
             background-color: var(--line-inactive);
             border-radius: 2px;
             margin-bottom: 5px;
-            transition: background-color 0.3s ease; /* Smooth color change */
+            transition: background-color 0.3s ease;
         }
 
         /* This is the class Javascript will add */
         .val-line.valid {
             background-color: var(--line-active);
-            box-shadow: 0 0 5px var(--line-active); /* Little glow effect */
+            box-shadow: 0 0 5px var(--line-active); 
         }
 
         .val-text {
@@ -182,6 +185,15 @@
         .btn-signup:hover {
             background-color: #b5561e;
         }
+        
+        /* Message displayed below the button */
+        #validationMessage {
+            color: var(--error-color); 
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
 
         /* Footer */
         .footer-text {
@@ -197,7 +209,7 @@
             text-decoration: underline;
             font-weight: bold;
         }
-
+        /* --- END OF ORIGINAL CSS --- */
     </style>
 </head>
 <body>
@@ -208,52 +220,87 @@
         <div class="logo-container">
             <img src="images/SSGLOGO.png" alt="Logo" onerror="this.style.display='none'">
         </div>
+        
+        <form action="process_signup.php" method="POST" id="signupForm">
 
-        <div class="form-group">
-            <input type="email" id="email" placeholder="Email" required>
-        </div>
+            <div class="form-group">
+                <input type="email" id="emailInput" name="email" placeholder="Email" required>
+            </div>
 
-        <div class="form-group">
-            <input type="text" name="fullname" id="fullname" placeholder="Fullname (Lastname, Firstname, M.I.)" required>
-        </div>
+            <div class="form-group">
+                <input type="text" id="fullnameInput" name="fullname" placeholder="Fullname (Lastname, Firstname, M.I.)" required>
+            </div>
 
-        <div class="form-group">
-            <select name="position" id="position" required>
-                    <option value="" disabled selected>Position</option>
-                    <option>President</option>
-                    <option>Vice President</option>
-                    <option>Secretary</option>
-                    <option>Treasurer</option>
-                    <option>Auditor</option>
-                    <option>P.R.O.</option>
-                    <option>Grade Level Representative</option>
-                    <option>Muse</option>
-                    <option>Escort</option>
-                    <option>Adviser</option>
+            <div class="form-group">
+                <select id="positionInput" name="position" required>
+                    <option value="" disabled selected>Select Position</option>
+                    <option value="PRESIDENT">PRESIDENT</option>
+                    <option value="VICE PRESIDENT">VICE PRESIDENT</option>
+                    <option value="COED SENATOR">COED SENATOR</option>
+                    <option value="CAS SENATOR">CAS SENATOR</option>
+                    <option value="COTE SENATOR">COTE SENATOR</option>
+                    <option value="CHMT SENATOR">CHMT SENATOR</option>
+                    <option value="CAFE SENATOR">CAFE SENATOR</option>
+                    <option value="BSED-MATH HR">BSED-MATH HR</option>
+                    <option value="BEED HR">BEED HR</option>
+                    <option value="BTLED HR">BTLED HR</option>
+                    <option value="BSA HR">BSA HR</option>
+                    <option value="BSF HR">BSF HR</option>
+                    <option value="BSES HR">BSES HR</option>
+                    <option value="BSP HR">BSP HR</option>
+                    <option value="BAEL HR">BAEL HR</option>
+                    <option value="BALIT HR">BALIT HR</option>
+                    <option value="BSIE HR">BSIE HR</option>
+                    <option value="BSIT HR">BSIT HR</option>
+                    <option value="BIT-AUTOMOTIVE HR">BIT-AUTOMOTIVE HR</option>
+                    <option value="BIT-COMPUTER TECHNOLOGY HR">BIT-COMPUTER TECHNOLOGY HR</option>
+                    <option value="BIT-ELECTRONICS HR">BIT-ELECTRONICS HR</option>
+                    <option value="BIT-GARMENTS HR">BIT-GARMENTS HR</option>
+                    <option value="BIT-DRAFTING HR">BIT-DRAFTING HR</option>
+                    <option value="BSTH HR">BSTH HR</option>
+                    <option value="BSHM HR">BSHM HR</option>
+                    <option value="EXECUTIVE SECRETARY">EXECUTIVE SECRETARY</option>
+                    <option value="DEPUTY EXECUTIVE SECRETARY">DEPUTY EXECUTIVE SECRETARY</option>
+                    <option value="PRESS SECRETARY">PRESS SECRETARY</option>
+                    <option value="DEPUTY PRESS SECRETARY">DEPUTY PRESS SECRETARY</option>
+                    <option value="EXECUTIVE SECRETARY OF FINANCE">EXECUTIVE SECRETARY OF FINANCE</option>
+                    <option value="DEPUTY SECRETARY OF FINANCE">DEPUTY SECRETARY OF FINANCE</option>
+                    <option value="SECRETARY ON AUDIT">SECRETARY ON AUDIT</option>
+                    <option value="MASS MEDIA DIRECTOR">MASS MEDIA DIRECTOR</option>
+                    <option value="GRAPHICS COMMITTEE">GRAPHICS COMMITTEE</option>
+                    <option value="DOCUMENTATION OFFICER">DOCUMENTATION OFFICER</option>
+                    <option value="TECHNICAL COMMITTEE">TECHNICAL COMMITTEE</option>
+                    <option value="EVENTS AND PLANNING COMMITTEE">EVENTS AND PLANNING COMMITTEE</option>
+                    <option value="DESIGN OFFICER">DESIGN OFFICER</option>
+                    <option value="LOGISTICS COMMITTEE">LOGISTICS COMMITTEE</option>
+                    <option value="LINKAGE COMMITTEE">LINKAGE COMMITTEE</option>
                 </select>
-        </div>
-
-        <div class="form-group">
-            <input type="password" id="passwordInput" placeholder="Password" required>
-            <i class="fa-solid fa-eye-slash password-toggle" id="togglePassword"></i>
-        </div>
-
-        <div class="validation-row">
-            <div class="val-item">
-                <div class="val-line" id="line-length"></div>
-                <span class="val-text" id="text-length">min 8 letters</span>
             </div>
-            <div class="val-item">
-                <div class="val-line" id="line-caps"></div>
-                <span class="val-text" id="text-caps">at least 1 capital letter</span>
-            </div>
-            <div class="val-item">
-                <div class="val-line" id="line-number"></div>
-                <span class="val-text" id="text-number">at least 1 number</span>
-            </div>
-        </div>
 
-        <button class="btn-signup" onclick="handleSignup()">Sign up</button>
+            <div class="form-group">
+                <input type="password" id="passwordInput" name="password" placeholder="Password" required>
+                <i class="fa-solid fa-eye-slash password-toggle" id="togglePassword"></i>
+            </div>
+
+            <div class="validation-row">
+                <div class="val-item">
+                    <div class="val-line" id="line-length"></div>
+                    <span class="val-text" id="text-length">min 8 letters</span>
+                </div>
+                <div class="val-item">
+                    <div class="val-line" id="line-caps"></div>
+                    <span class="val-text" id="text-caps">at least 1 capital letter</span>
+                </div>
+                <div class="val-item">
+                    <div class="val-line" id="line-number"></div>
+                    <span class="val-text" id="text-number">at least 1 number</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-signup" id="signupButton">Sign up</button>
+        </form>
+        
+        <div id="validationMessage"></div>
 
         <div class="footer-text">
             Do you have already account? <a href="login.html">Sign in</a>
@@ -261,10 +308,76 @@
     </div>
 
     <script>
-        // 1. Password Visibility Toggle
-        const togglePassword = document.querySelector('#togglePassword');
-        const passwordInput = document.querySelector('#passwordInput');
+        // Check for submission status immediately when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status');
+            const messageDiv = document.getElementById('validationMessage');
 
+            if (status === 'success') {
+                // Show success alert and redirect
+                alert("Account created successfully!");
+                window.location.href = 'login.html'; 
+                return;
+            } else if (status === 'duplicate') {
+                messageDiv.textContent = "That email address is already registered. Please sign in.";
+            } else if (status === 'db_error') {
+                messageDiv.textContent = "Server error: Database insertion failed. Try again.";
+            } else if (status === 'fields_error') {
+                messageDiv.textContent = "Please fill out all fields.";
+            }
+        });
+
+        // 1. Get all Input and Validation Elements
+        const emailInput = document.getElementById('emailInput');
+        const fullnameInput = document.getElementById('fullnameInput');
+        const positionInput = document.getElementById('positionInput'); // Select element now
+        const passwordInput = document.getElementById('passwordInput');
+        const togglePassword = document.querySelector('#togglePassword');
+        const signupButton = document.getElementById('signupButton');
+        const validationMessage = document.getElementById('validationMessage');
+        const signupForm = document.getElementById('signupForm'); 
+        
+        // Password validation bar elements
+        const lineLength = document.getElementById('line-length');
+        const lineCaps = document.getElementById('line-caps');
+        const lineNumber = document.getElementById('line-number');
+        const textLength = document.getElementById('text-length');
+        const textCaps = document.getElementById('text-caps');
+        const textNumber = document.getElementById('text-number');
+        
+        // --- VALIDATION FUNCTIONS ---
+        
+        function checkPasswordValidity(val) {
+            const hasMinLength = val.length >= 8;
+            const hasCapital = /[A-Z]/.test(val);
+            const hasNumber = /\d/.test(val);
+            return {
+                hasMinLength,
+                hasCapital,
+                hasNumber,
+                isCompletelyValid: hasMinLength && hasCapital && hasNumber
+            };
+        }
+
+        function isValidEmail(email) {
+            return email.includes('@');
+        }
+        
+        // Allows letters, spaces, hyphens, apostrophes, commas, and periods.
+        function isValidFullname(name) {
+            return /^[a-zA-Z\s-',.]+$/.test(name); 
+        }
+
+        // NOTE: This function is now redundant as the dropdown restricts input, 
+        // but we keep the structure for compatibility.
+        function isValidPosition(position) {
+            return position.trim() !== ''; // Basic check: ensures user selects an option
+        }
+
+        // --- END VALIDATION FUNCTIONS ---
+
+        // 2. Password Visibility Toggle
         togglePassword.addEventListener('click', function (e) {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
@@ -272,103 +385,96 @@
             this.classList.toggle('fa-eye-slash');
         });
 
-        // 2. Password Validation Logic
-        const lineLength = document.getElementById('line-length');
-        const lineCaps = document.getElementById('line-caps');
-        const lineNumber = document.getElementById('line-number');
-        
-        const textLength = document.getElementById('text-length');
-        const textCaps = document.getElementById('text-caps');
-        const textNumber = document.getElementById('text-number');
-
-        let isLengthValid = false;
-        let isCapsValid = false;
-        let isNumberValid = false;
-
+        // 3. Password Validation Bar Logic (Real-time Feedback)
         passwordInput.addEventListener('input', function() {
             const val = this.value;
+            const validation = checkPasswordValidity(val);
 
-            // RULE 1: Min 8 characters
-            if (val.length >= 8) {
-                lineLength.classList.add('valid');
-                textLength.classList.add('valid-text');
-                isLengthValid = true;
-            } else {
-                lineLength.classList.remove('valid');
-                textLength.classList.remove('valid-text');
-                isLengthValid = false;
+            // Update Length
+            lineLength.classList.toggle('valid', validation.hasMinLength);
+            textLength.classList.toggle('valid-text', validation.hasMinLength);
+
+            // Update Caps
+            lineCaps.classList.toggle('valid', validation.hasCapital);
+            textCaps.classList.toggle('valid-text', validation.hasCapital);
+
+            // Update Number
+            lineNumber.classList.toggle('valid', validation.hasNumber);
+            textNumber.classList.toggle('valid-text', validation.hasNumber);
+        });
+        
+        // 4. Input Validation and Submission Logic
+        signupButton.addEventListener('click', function(e) {
+            // Prevent default HTML submission while we run JS validation
+            e.preventDefault(); 
+            
+            // Clear previous errors
+            validationMessage.textContent = '';
+            
+            let isValid = true;
+            let firstErrorInput = null;
+            let errorMessage = 'Please fill out all required fields.'; 
+
+            // Clear error styles
+            const allInputs = [emailInput, fullnameInput, positionInput, passwordInput];
+            allInputs.forEach(input => input.classList.remove('error-border')); 
+
+            // --- A. EMAIL VALIDATION ---
+            if (emailInput.value.trim() === '') {
+                isValid = false;
+                emailInput.classList.add('error-border');
+                if (!firstErrorInput) { firstErrorInput = emailInput; errorMessage = 'Email field cannot be empty.'; }
+            } else if (!isValidEmail(emailInput.value.trim())) {
+                isValid = false;
+                emailInput.classList.add('error-border');
+                if (!firstErrorInput) { firstErrorInput = emailInput; errorMessage = 'Email must contain the @ symbol.'; }
             }
 
-            // RULE 2: At least 1 Capital Letter (A-Z)
-            // Regex explanation: /[A-Z]/ looks for any uppercase letter
-            if (/[A-Z]/.test(val)) {
-                lineCaps.classList.add('valid');
-                textCaps.classList.add('valid-text');
-                isCapsValid = true;
-            } else {
-                lineCaps.classList.remove('valid');
-                textCaps.classList.remove('valid-text');
-                isCapsValid = false;
+            // --- B. FULLNAME VALIDATION ---
+            if (fullnameInput.value.trim() === '' && isValid) {
+                isValid = false;
+                fullnameInput.classList.add('error-border');
+                if (!firstErrorInput) { firstErrorInput = fullnameInput; errorMessage = 'Fullname field cannot be empty.'; }
+            } else if (!isValidFullname(fullnameInput.value.trim()) && isValid) {
+                isValid = false;
+                fullnameInput.classList.add('error-border');
+                if (!firstErrorInput) { firstErrorInput = fullnameInput; errorMessage = 'Fullname must only contain letters, spaces, hyphens, apostrophes, commas, or periods.'; }
             }
 
-            // RULE 3: At least 1 Number (0-9)
-            // Regex explanation: /\d/ looks for any digit
-            if (/\d/.test(val)) {
-                lineNumber.classList.add('valid');
-                textNumber.classList.add('valid-text');
-                isNumberValid = true;
+            // --- C. POSITION VALIDATION (Checking if default option is selected) ---
+            if (positionInput.value === '' && isValid) {
+                isValid = false;
+                positionInput.classList.add('error-border');
+                if (!firstErrorInput) { firstErrorInput = positionInput; errorMessage = 'Please select a position.'; }
+            }
+
+            // --- D. PASSWORD VALIDATION ---
+            if (passwordInput.value.trim() === '' && isValid) {
+                isValid = false;
+                passwordInput.classList.add('error-border');
+                if (!firstErrorInput) { firstErrorInput = passwordInput; errorMessage = 'Password field cannot be empty.'; }
+            } else if (passwordInput.value.trim() !== '' && isValid) {
+                const passwordChecks = checkPasswordValidity(passwordInput.value);
+                if (!passwordChecks.isCompletelyValid) {
+                    isValid = false;
+                    passwordInput.classList.add('error-border');
+                    if (!firstErrorInput) { firstErrorInput = passwordInput; errorMessage = 'Password must meet all criteria (min 8 chars, 1 capital, 1 number).'; }
+                }
+            }
+            
+            // FINAL ACTION: Submit to Server or Display Error
+            if (isValid) {
+                // SUCCESS: Submits the data to the dedicated processor (process_signup.php)
+                signupForm.submit(); 
             } else {
-                lineNumber.classList.remove('valid');
-                textNumber.classList.remove('valid-text');
-                isNumberValid = false;
+                // FAILURE: Displays specific error message and focuses on the first invalid field.
+                validationMessage.textContent = errorMessage;
+                
+                if (firstErrorInput) {
+                    firstErrorInput.focus();
+                }
             }
         });
-
-        // 3. Sign Up Function
-        async function handleSignup() {
-            const email = document.getElementById('email').value;
-            const fullname = document.getElementById('fullname').value;
-            const position = document.getElementById('position').value;
-            const password = document.getElementById('passwordInput').value;
-
-            // Validate all fields
-            if (!email || !fullname || !position || !password) {
-                alert('Please fill in all fields');
-                return;
-            }
-
-            // Check password requirements
-            if (!isLengthValid || !isCapsValid || !isNumberValid) {
-                alert('Please meet all password requirements');
-                return;
-            }
-
-            // Create form data
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('fullname', fullname);
-            formData.append('position', position);
-            formData.append('password', password);
-
-            try {
-                const response = await fetch('signup.php', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    alert(result.message);
-                    window.location.href = 'login.html';
-                } else {
-                    alert(result.message);
-                }
-            } catch (error) {
-                alert('An error occurred. Please try again.');
-                console.error('Error:', error);
-            }
-        }
     </script>
 
 </body>

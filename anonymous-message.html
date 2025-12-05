@@ -3,163 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anonymous Message - SSGCTUAC</title>
+    <title>Send Anonymous Message</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-
+        /* --- CSS STYLES (SAME AS BEFORE) --- */
+        :root { --primary-red: #960b15; --cream: #fdfcd7; --orange-btn: #cf6828; --text-color: #4a4a4a; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-        body {
-            background-color: var(--primary-red);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* Header Curve */
-        .header-curve {
-            position: absolute;
-            top: -55px;
-            left: 0;
-            width: 100%;
-            height: 35%; /* Adjusts how far down the curve goes */
-            background-color: #fffacb;
-            border-bottom-left-radius: 99% 77%;
-            border-bottom-right-radius: 99% 77%;
-            z-index: 1;
-        }
-
-        .wrapper {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            padding-bottom: 0px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            top: -39px;
-        }
-
-        /* Logo */
-        .logo-container {
-            position: relative;
-            width: 350px;
-            height: 350px;
-            /* background-color: white; */
-            border-radius: 50%;
-            /* border: 4px solid #d4af37; */
-            margin-bottom: 40px;
-            overflow: hidden;
-            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            top: 44px;
-        }
+        body { background-color: var(--primary-red); min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+        .header-curve { position: absolute; top: -55px; left: 0; width: 100%; height: 35%; background-color: #fffacb; border-bottom-left-radius: 99% 77%; border-bottom-right-radius: 99% 77%; z-index: 1; }
+        .wrapper { position: relative; z-index: 2; width: 100%; max-width: 400px; padding: 20px; padding-bottom: 0px; display: flex; flex-direction: column; align-items: center; top: -39px;}
+        .logo-container { position: relative; width: 350px; height: 350px; border-radius: 50%; margin-bottom: 40px; overflow: hidden; display: flex; justify-content: center; align-items: center; top: 44px; }
         .logo-container img { width: 100%; height: 100%; object-fit: cover; }
-
-        .username-title {
-            color: #fffacb; font-weight: bold; font-size: 22px;
-            margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .sub-text {
-            color: #fffacb; font-size: 14px; margin-bottom: 25px; opacity: 0.9;
-        }
-
-        /* Message Box Container */
-        .message-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 5px; /* Reduced margin to fit file name */
-        }
-
-        textarea {
-            width: 100%; height: 150px; padding: 20px; padding-bottom: 40px;
-            border-radius: 15px; border: none;
-            background-color: var(--cream); color: #AC1217;
-            font-size: 16px; outline: none; resize: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        textarea::placeholder { color: #AC1217; font-weight: 500; }
-
-        /* Icons Container */
-        .input-icons {
-            position: absolute; bottom: 15px; right: 20px;
-            display: flex; gap: 12px;
-            color: #ac1117; font-size: 20px;
-            cursor: pointer; z-index: 10;
-        }
-
+        .username-title { color: white; font-weight: bold; font-size: 22px; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .sub-text { color: white; font-size: 14px; margin-bottom: 25px; opacity: 0.9; }
+        .message-container { position: relative; width: 100%; margin-bottom: 5px; }
+        textarea { width: 100%; height: 150px; padding: 20px; padding-bottom: 40px; border-radius: 15px; border: none; background-color: var(--cream); color: var(--text-color); font-size: 16px; outline: none; resize: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        textarea::placeholder { color: #7a7a7a; font-weight: 500; }
+        .input-icons { position: absolute; bottom: 15px; right: 20px; display: flex; gap: 12px; color: #c94e4e; font-size: 20px; cursor: pointer; z-index: 10; }
         .input-icons i:hover { color: var(--primary-red); transform: scale(1.1); }
-
-        /* HASHTAG MENU POPUP */
-        .hashtag-menu {
-            position: absolute;
-            bottom: 45px; /* Appears above the icons */
-            right: 0px;
-            background-color: #fffacb;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            gap: 5px;
-            width: 120px;
-            z-index: 20;
-        }
-        
-        /* Little triangle pointing down */
-        .hashtag-menu::after {
-            content: ""; position: absolute; bottom: -5px; right: 35px;
-            width: 10px; height: 10px; background: white;
-            transform: rotate(45deg);
-        }
-
-        .tag-option {
-            font-size: 13px; color: #ac1117;
-            padding: 5px 8px; border-radius: 5px; cursor: pointer;
-            transition: 0.2s;
-        }
-
+        .hashtag-menu { position: absolute; bottom: 45px; right: 0px; background-color: white; border-radius: 10px; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: none; flex-direction: column; gap: 5px; width: 120px; z-index: 20; }
+        .hashtag-menu::after { content: ""; position: absolute; bottom: -5px; right: 35px; width: 10px; height: 10px; background: white; transform: rotate(45deg); }
+        .tag-option { font-size: 13px; color: var(--text-color); padding: 5px 8px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
         .tag-option:hover { background-color: #f0f0f0; color: var(--orange-btn); }
-        
-        .tag-option.selected {
-            background-color: var(--cream);
-            color: var(--primary-red);
-            font-weight: bold;
-        }
-
-        /* File Attachment Display */
-        .file-display {
-            width: 100%; text-align: left;
-            font-size: 12px; color: #fffacb; margin-bottom: 5px;
-            height: 15px; /* Fixed height to prevent jumping */
-        }
+        .file-display { width: 100%; text-align: right; font-size: 12px; color: white; margin-bottom: 20px; height: 15px; }
         .file-display i { margin-right: 5px; }
-
-        .disclaimer { color: #fffacb; font-size: 14px; margin-bottom: 20px; opacity: 0.8; }
-
-        .btn-send {
-            width: 100%; padding: 15px; border-radius: 25px; border: none;
-            background-color: var(--orange-btn); color: #fffacb;
-            font-size: 18px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.3s;
-        }
+        .disclaimer { color: white; font-size: 11px; margin-bottom: 30px; opacity: 0.8; }
+        .btn-send { width: 100%; padding: 15px; border-radius: 25px; border: none; background-color: var(--orange-btn); color: white; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.3s; }
         .btn-send:hover { background-color: #b5561e; }
-        .btn-send:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        .footer {
-            width: 100%; text-align: center; color: #fffacb;
-            font-size: 10px; opacity: 0.7; padding-bottom: 20px;
-            margin-top: auto;
-            z-index: 2;
-        }
+        .footer { width: 100%; text-align: center; color: white; font-size: 10px; opacity: 0.7; padding-bottom: 20px; margin-top: auto; z-index: 2; }
     </style>
 </head>
 <body>
@@ -174,28 +45,31 @@
         <h2 class="username-title">@ssgctuac</h2>
         <p class="sub-text">Your voice matters!</p>
 
-        <div class="message-container">
-            <textarea id="messageInput" placeholder="send us anonymous messages..."></textarea>
-            
-            <input type="file" id="fileUpload" style="display: none;">
+        <form id="anonMessageForm" action="process_messages.php" method="POST" enctype="multipart/form-data">
+            <div class="message-container">
+                <textarea id="messageInput" name="message_text" placeholder="send us anonymous messages..."></textarea>
+                
+                <input type="file" id="fileUpload" name="attachment[]" multiple style="display: none;">
 
-            <div class="input-icons">
-                <i class="fa-solid fa-hashtag" id="hashBtn" title="Add Hashtag"></i>
-                <i class="fa-solid fa-paperclip" id="attachBtn" title="Attach File"></i>
+                <div class="input-icons">
+                    <i class="fa-solid fa-hashtag" id="hashBtn" title="Add Hashtag"></i>
+                    <i class="fa-solid fa-paperclip" id="attachBtn" title="Attach File"></i>
+                </div>
+
+                <div class="hashtag-menu" id="hashMenu">
+                    <div class="tag-option" onclick="addTag('Concern')">#Concern</div>
+                    <div class="tag-option" onclick="addTag('Complaint')">#Complaint</div>
+                    <div class="tag-option" onclick="addTag('Query')">#Query</div>
+                </div>
             </div>
 
-            <div class="hashtag-menu" id="hashMenu">
-                <div class="tag-option" onclick="addTag('Concern')">#Concern</div>
-                <div class="tag-option" onclick="addTag('Complaint')">#Complaint</div>
-                <div class="tag-option" onclick="addTag('Query')">#Query</div>
-            </div>
-        </div>
+            <div class="file-display" id="fileNameDisplay"></div>
 
-        <div class="file-display" id="fileNameDisplay"></div>
+            <p class="disclaimer">This message will be sent anonymously</p>
 
-        <p class="disclaimer">This message will be sent anonymously</p>
-
-        <button class="btn-send" onclick="sendMessage()">Send!</button>
+            <button class="btn-send" type="submit" onclick="return validateAndSubmit(event)">Send!</button>
+        </form>
+        
     </div>
 
     <div class="footer">
@@ -204,115 +78,70 @@
     </div>
 
     <script>
-        // --- HASHTAG LOGIC ---
+        // --- VARIABLES ---
         const hashBtn = document.getElementById('hashBtn');
         const hashMenu = document.getElementById('hashMenu');
         const textarea = document.getElementById('messageInput');
-
-        // Toggle menu visibility
+        const attachBtn = document.getElementById('attachBtn');
+        const fileUpload = document.getElementById('fileUpload');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        
+        // 1. Hashtag UI Logic
         hashBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents click from bubbling to document
-            if (hashMenu.style.display === 'flex') {
-                hashMenu.style.display = 'none';
-            } else {
-                hashMenu.style.display = 'flex';
-            }
+            e.stopPropagation();
+            hashMenu.style.display = (hashMenu.style.display === 'flex') ? 'none' : 'flex';
         });
 
-        // Close menu if clicking anywhere else
         document.addEventListener('click', (e) => {
             if (!hashMenu.contains(e.target) && e.target !== hashBtn) {
                 hashMenu.style.display = 'none';
             }
         });
 
-        // Add tag to textarea
-        function addTag(tagName) {
-            const tag = `#${tagName}`;
-            
-            // Check if tag is already there to avoid duplicates (optional logic)
-            if (!textarea.value.includes(tag)) {
-                // If textarea has text, add a space before the tag
-                if (textarea.value.length > 0 && !textarea.value.endsWith(' ')) {
-                    textarea.value += ' ';
-                }
-                textarea.value += tag + ' ';
+        // 2. Add Text to Box
+        window.addTag = function(tagName) { 
+            const tagText = `#${tagName}`;
+            if (!textarea.value.includes(tagText)) {
+                if (textarea.value.length > 0 && !textarea.value.endsWith(' ')) textarea.value += ' ';
+                textarea.value += tagText + ' ';
             }
-            // Keep menu open to allow multiple selects? 
-            // Or close it? Let's keep it open so they can pick multiple.
-        }
+        };
 
+        // 3. File Logic (UPDATED for Multiple Files)
+        attachBtn.addEventListener('click', () => fileUpload.click());
 
-        // --- ATTACH FILE LOGIC ---
-        const attachBtn = document.getElementById('attachBtn');
-        const fileUpload = document.getElementById('fileUpload');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
-
-        // Trigger hidden input click
-        attachBtn.addEventListener('click', () => {
-            fileUpload.click();
-        });
-
-        // When a file is selected
         fileUpload.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const name = this.files[0].name;
-                // Show file name with a paperclip icon
-                fileNameDisplay.innerHTML = `<i class="fa-solid fa-check"></i> Attached: ${name}`;
-                // Change icon color to show active
+            // Check length instead of just [0]
+            if (this.files && this.files.length > 0) {
+                const count = this.files.length;
+                
+                if (count === 1) {
+                    // One file
+                    fileNameDisplay.innerHTML = `<i class="fa-solid fa-check"></i> Attached: ${this.files[0].name}`;
+                } else {
+                    // Multiple files
+                    fileNameDisplay.innerHTML = `<i class="fa-solid fa-check"></i> Attached: ${count} images`;
+                }
+                
                 attachBtn.style.color = "var(--primary-red)";
+            } else {
+                fileNameDisplay.innerHTML = "";
+                attachBtn.style.color = "";
             }
         });
 
+        // 4. Validation
+        window.validateAndSubmit = function(event) {
+            const msgText = textarea.value.trim();
+            const fileCount = fileUpload.files.length;
 
-        // --- SEND LOGIC ---
-        function sendMessage() {
-            const msg = textarea.value;
-            const file = fileUpload.files[0];
-
-            // VALIDATION LOGIC:
-            // This checks: Is the message empty AND is the file missing?
-            // If BOTH are missing, show error.
-            // If ONE of them exists (e.g. text exists but file is missing), it proceeds.
-            if (msg.trim() === "" && !file) {
+            if (msgText === "" && fileCount === 0) {
                 alert("Please type a message or attach a file!");
-                return;
+                event.preventDefault(); 
+                return false;
             }
-
-            const btn = document.querySelector('.btn-send');
-            const originalText = btn.innerText;
-            btn.innerText = "Sending...";
-            btn.disabled = true;
-
-            const formData = new FormData();
-            formData.append('message', msg);
-            if (file) {
-                formData.append('file', file);
-            }
-
-            fetch('php/submit_message.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // REDIRECT to the new success page
-                    window.location.href = 'message-sent.html';
-                } else {
-                    alert('Error: ' + data.message);
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to send message. Please try again.');
-                btn.innerText = originalText;
-                btn.disabled = false;
-            });
-        }
+            return true;
+        };
     </script>
-
 </body>
 </html>

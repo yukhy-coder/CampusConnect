@@ -5,8 +5,7 @@
 $servername = "localhost";
 $username = "root";       
 $password = "";           
-$dbname = "Campus_Connect"; 
-
+$dbname = "CampusConnect"; 
 
 // Redirect URLs
 $verification_page = "otp-verify.html";
