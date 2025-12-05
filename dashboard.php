@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root"; 
 $password = "";
-$dbname = "Campus_Connect";
+$dbname = "CampusConnect";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 $messages = [];

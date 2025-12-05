@@ -8,12 +8,11 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // =================================================================
 
-
 // 1. DATABASE CONNECTION DETAILS
 $servername = "localhost";
 $username = "root";       
 $password = "";           
-$dbname = "Campus_Connect"; // VERIFY THIS NAME
+$dbname = "CampusConnect"; // VERIFY THIS NAME
 
 // Redirect URLs
 $login_page = "password-changed.html";
