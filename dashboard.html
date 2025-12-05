@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS STYLES --- */
+        :root { --primary-red: #960b15; --cream: #fdfcd7; --sidebar-width: 350px; --orange-btn: #e86c29; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { background: linear-gradient(90deg, #960b15 0%, #70060d 100%); height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; color: white; position: fixed; top: 0; width: 100%; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-logo { width: 60px; height: 60px;  border-radius: 50%;  overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .header-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .header-title { font-weight: 600; font-size: 18px; letter-spacing: 0.5px; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .search-bar { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 8px 15px; display: flex; align-items: center; width: 250px; }
+        .search-bar input { background: transparent; border: none; color: white; outline: none; width: 100%; margin-left: 10px; }
+        .search-bar i { color: white; opacity: 0.8; }
+        .profile-icon { width: 35px; height: 35px; background-color: #ff6b6b; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:14px;}
+        
+        .main-container { display: flex; margin-top: 70px; height: calc(100vh - 70px); }
+        .sidebar { width: var(--sidebar-width); background-color: white; border-right: 1px solid #ddd; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
+        
+        .calendar-section { padding: 20px; background-color: white; min-height: 349px;}
+        .cal-header { color: var(--primary-red); font-weight: bold; font-size: 20px; text-align: center; margin-bottom: 20px; text-transform: uppercase; }
+        .calendar-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; color: #333; margin-bottom: 5px; font-size: 12px; }
+        .calendar-dates { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; font-size: 12px; color: #666; }
+        
+        .date { padding: 8px; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+        .date:hover { background-color: #f0f0f0; }
+        .date.today { border: 2px solid var(--primary-red); color: var(--primary-red); font-weight: bold; background-color: transparent; }
+        .date.event-date { background-color: var(--primary-red); color: white; font-weight: bold; }
+        /* Add inside your <style> tag */
+        .event-card span {
+            cursor: pointer;
+            flex-grow: 1; /* Makes the click area fill the space */
+        }
+        .event-card span:hover {
+            text-decoration: underline;
+        }
+        /* Selected Date Style */
+        .date.selected-date { background-color: var(--primary-red); color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+
+        .cal-nav { display: flex; justify-content: center; gap: 20px; margin-top: 20px; color: var(--primary-red); cursor: pointer; font-size: 18px; 
+            
+        position: absolute;
+        top: 288px;
+        right: 154px;
+        }
+        .events-header { background-color: var(--primary-red); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .events-list { background-color: var(--cream); flex-grow: 1; padding: 15px; display: flex; flex-direction: column; gap: 10px; overflow: auto;}
+        .event-card { background-color: var(--primary-red); color: white; padding: 12px 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .feed-container { flex-grow: 1; background-color: #f4f4f4; padding: 30px; overflow-y: auto; padding-top: 0px; padding-right: 0px;; }
+        .post-card { background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 100%; }
+        .post-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 45px; height: 45px; background-color: #dcdcdc; border-radius: 50%; }
+        .user-name { font-weight: bold; font-size: 16px; color: #333; }
+        .post-menu { color: #333; font-size: 20px; cursor: pointer; letter-spacing: 2px; }
+        .post-content { font-size: 16px; line-height: 1.5; color: #222; margin-bottom: 15px; font-weight: 500; }
+        .tags-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tag { background-color: #e6e6e6; padding: 5px 12px; border-radius: 15px; font-size: 12px; color: #444; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .tag-dot { width: 6px; height: 6px; background-color: red; border-radius: 50%; }
+        /* Add/Update this in your <style> */
+        /* --- UPDATED IMAGE STYLES --- */
+        
+        /* 1. Container for the images */
+        .post-image-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto; /* Scroll sideways if many images */
+            margin-top: 10px;
+            padding-bottom: 5px; /* Space for scrollbar */
+        }
+
+        /* 2. Base style for a SINGLE image (Adaptive) */
+        .post-image { 
+            width: 100%; 
+            height: auto; /* <--- THIS IS THE KEY: Let height grow */
+            background-color: transparent; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            border: 1px solid #eee; /* Optional border */
+        }
+
+        .post-image img { 
+            width: 100%; 
+            height: auto; /* Maintain Aspect Ratio */
+            display: block; /* Removes tiny gap at bottom */
+        }
+
+        /* 3. Special style for MULTIPLE images (Gallery Row) */
+        /* We keep these fixed so they align nicely in a row */
+        .post-image.multiple {
+            min-width: 250px; /* Fixed width for scrolling */
+            width: 250px;
+            height: 250px;    /* Fixed height for uniformity */
+            flex-shrink: 0;
+        }
+        
+        .post-image.multiple img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Crop thumbnails to fill square */
+        }
+
+        /* Drawer Styles */
+        .add-event-drawer { position: fixed; bottom: 0; left: 0; width: var(--sidebar-width); height: auto; background-color: white; border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); padding: 20px; z-index: 200; transform: translateY(110%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .add-event-drawer.open { transform: translateY(0); }
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-close { font-size: 20px; color: #888; cursor: pointer; background: none; border: none; }
+        .btn-save { background-color: var(--orange-btn); color: white; padding: 8px 20px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; }
+        .drawer-input-group { margin-bottom: 15px; }
+        .drawer-input { 
+            width: 100%; 
+            padding: 10px 0; 
+            border: none; 
+            border-bottom: 1px solid #eee; 
+            font-size: 16px; 
+            outline: none; 
+        }
+        
+        .drawer-user { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .drawer-avatar { width: 30px; height: 30px; background-color: #ff6b6b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;}
+        .drawer-username { font-size: 14px; color: #555; font-weight: 500; }
+        
+        .selected-date-display { font-size: 13px; color: #888; margin-bottom: 15px; font-weight: 600; background: #f9f9f9; padding: 8px 12px; border-radius: 8px; display: inline-block; }
+
+        .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+        /* --- POST MENU DROPDOWN STYLES --- */
+        .post-menu {
+            position: relative; /* Key for positioning the dropdown */
+        }
+
+        .post-menu i {
+            padding: 5px;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        
+        .post-menu i:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 25px;
+            right: 0;
+            width: 220px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            display: none; /* Hidden by default */
+            z-index: 100;
+            border: 1px solid #eee;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .menu-item {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: #f9f9f9;
+            color: var(--primary-red);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Simple fade animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- MAIN HEADER MENU STYLES --- */
+        .header-menu-container {
+            position: relative; /* Keeps the menu anchored to the button */
+        }
+
+        .main-dropdown-menu {
+            position: absolute;
+            top: 50px; /* Pushes it down below the header */
+            right: 0;
+            width: 260px; /* Wider than the post menu */
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); /* Stronger shadow */
+            padding: 10px 0;
+            display: none; /* Hidden by default */
+            z-index: 1000;
+            border: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .main-dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        /* Styling the items inside */
+        .main-dropdown-menu .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px; /* More space between icon and text */
+            color: #333; /* Dark text (override header white) */
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            text-decoration: none; /* In case we use <a> tags */
+        }
+
+        .main-dropdown-menu .menu-item:hover {
+            background-color: #fff5f5; /* Light red tint on hover */
+            color: var(--primary-red);
+        }
+
+        .main-dropdown-menu .menu-item i {
+            width: 20px; /* Fixed width ensures text aligns perfectly */
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* Green Header for Read Posts */
+        .read-posts-header {
+            background-color: #0d8a2e; /* Green */
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: none; /* Hidden by default */
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        /* NEW: Red Header for Favorites */
+        .favorites-header {
+            background-color: #d32f2f; /* Deep Red */
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: none; /* Hidden by default */
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        /* Grey Header for Archives */
+        .archive-header {
+            background-color: #9e9e9e; /* Grey */
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: none; /* Hidden by default */
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        /* Blue Header for Reviewed */
+        .reviewed-header {
+            background-color: #1976d2; /* Blue */
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 14px;
+            display: none; /* Hidden by default */
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        /* --- PROFILE DRAWER CSS --- */
+        .profile-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .profile-overlay.open { opacity: 1; visibility: visible; }
+
+        .profile-drawer {
+            position: fixed; top: 0; right: -400px; /* Hidden off-screen */
+            width: 380px; height: 100%;
+            background: #fff; z-index: 2001;
+            transition: 0.3s ease-in-out;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+        }
+        .profile-drawer.open { right: 0; }
+
+        .profile-drawer-header {
+            background-color: var(--primary-red);
+            height: 200px;
+            position: relative;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            color: white;
+            border-bottom-left-radius: 50% 30%;
+            border-bottom-right-radius: 50% 30%;
+            margin-bottom: 40px;
+            top: -20px;
+        }
+
+        .big-profile-icon {
+            width: 100px; height: 100px;
+            background-color: #e53935;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; font-weight: bold; color: white;
+            border: 4px solid white;
+            position: absolute; bottom: -50px;
+        }
+
+        .edit-profile-link { margin-top: 318px; font-size: 14px; opacity: 0.8; cursor: pointer; color: var(--primary-red) }
+
+        .profile-form { padding: 20px 30px; flex-grow: 1; overflow-y: auto;}
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 14px; color: var(--primary-red); margin-bottom: 5px; font-weight: bold;}
+
+        .input-wrapper { position: relative; }
+        .input-wrapper input {
+            width: 100%; padding: 12px 15px;
+            border: 1px solid #ffcccc; background-color: #fff8f8;
+            border-radius: 8px; outline: none; font-size: 14px; color: #333;
+        }
+        .input-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--primary-red); font-size: 12px; pointer-events: none; }
+
+        .drawer-actions { display: flex; gap: 15px; margin-top: 30px; }
+        .drawer-actions button {
+            flex: 1; padding: 12px; border-radius: 25px; border: none; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s;
+        }
+        .btn-back { background-color: #c62828; color: white; }
+        .btn-save { background-color: var(--orange-btn); color: white; }
+
+        /* --- NOTIFICATION STYLES --- */
+        .notif-dropdown {
+            position: absolute;
+            top: 60px; /* Pushes it below the header */
+            right: 80px; /* Positions it to the left of the hamburger menu */
+            width: 350px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            display: none; /* Hidden by default */
+            z-index: 2000;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+        .notif-dropdown.show { display: block; animation: fadeIn 0.2s; }
+
+        .notif-header {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .notif-list { max-height: 400px; overflow-y: auto; }
+
+        .notif-item {
+            display: flex; align-items: center; gap: 15px; padding: 15px;
+            border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: 0.2s;
+        }
+        .notif-item:hover { background-color: #f9f9f9; }
+
+        .notif-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; color: white; font-size: 18px;
+        }
+        .icon-msg { background-color: #e86c29; }
+        .icon-evt { background-color: var(--primary-red); }
+
+        .notif-content { flex-grow: 1; }
+        .notif-text { font-size: 13px; color: #333; font-weight: 600; line-height: 1.4; }
+        .notif-time { font-size: 11px; color: #888; margin-top: 4px; }
+        .notif-dots { color: #aaa; font-size: 18px; }
+            </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left" onclick="showDashboard()" style="cursor: pointer;" title="Back to Dashboard">
+            <div class="header-logo"><img src="images/SSGLOGO.png" alt="Logo" onerror="this.style.display='none'"></div>
+            <div class="header-title">Supreme Student Government</div>
+        </div>
+        <div class="header-right">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterPosts()">
+            </div>
+            <div class="profile-icon" onclick="openProfileDrawer()" style="cursor: pointer;">K</div>
+            <div id="notificationDropdown" class="notif-dropdown">
+                <div class="notif-header">Notifications</div>
+                <div class="notif-list" id="notifListContainer">
+                    </div>
+            </div>
+            
+            <div class="header-menu-container">
+                <i class="fa-solid fa-bars" id="mainMenuBtn" style="font-size:20px; cursor:pointer;"></i>
+                
+                <div class="main-dropdown-menu" id="mainMenu">
+
+                <div class="menu-item" onclick="toggleNotifications(event)"><i class="fa-regular fa-bell"></i> Notification</div>
+                
+                <div class="menu-item" onclick="location.href='super_admin_dashboard.html'">
+                    <i class="fa-solid fa-chart-simple"></i> Dashboard
+                </div>
+                
+                
+                <div class="menu-item" onclick="showReadPosts()"><i class="fa-regular fa-file-lines"></i> View Read Posts</div>
+                
+                <div class="menu-item" onclick="showFavorites()"><i class="fa-regular fa-heart"></i> View Favorites</div>
+
+                <div class="menu-item" onclick="showReviewed()"><i class="fa-solid fa-list-check"></i> View Reviewed Post</div>
+                
+                <div class="menu-item" onclick="showArchive()"><i class="fa-solid fa-box-archive"></i> View Archive</div>
+
+                <div class="menu-item" onclick="location.href='logout.php'"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+
+                <div class="menu-item" onclick="copyLink()"><i class="fa-solid fa-link"></i> Copy link</div>
+            </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="calendar-section">
+                <div class="cal-header" id="currentMonthYear">SEPTEMBER 2025</div>
+                <div class="calendar-weekdays"><div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div></div>
+                <div class="calendar-dates" id="calendarDates"></div>
+                <div class="cal-nav"><i class="fa-solid fa-chevron-left" id="prevMonth"></i><i class="fa-solid fa-chevron-right" id="nextMonth"></i></div>
+            </div>
+
+            <div class="events-header">
+                <div style="display:flex; align-items:center; gap:8px;"><i class="fa-regular fa-calendar"></i> Events</div>
+                <i class="fa-solid fa-plus" id="addEventBtn" style="cursor:pointer;" title="Add Event"></i>
+            </div>
+            
+            <div class="events-list" id="eventsListContainer"></div>
+        </aside>
+
+        <div class="add-event-drawer" id="eventDrawer">
+            <div class="drawer-header">
+                <button class="btn-close" id="closeDrawerBtn"><i class="fa-solid fa-xmark"></i></button>
+                <button class="btn-save" id="drawerSaveBtn" onclick="saveEvent()">Save</button>
+            </div>
+            
+            <div class="selected-date-display" id="drawerDateDisplay">Select a date</div>
+            
+            <div class="drawer-input-group">
+                <input type="text" id="eventTitleInput" class="drawer-input" placeholder="Add Event Title" style="font-weight:bold; font-size:18px;">
+            </div>
+
+            <div class="drawer-input-group">
+                <textarea id="eventDescInput" class="drawer-input" placeholder="Add Description" rows="3" style="resize:none; font-family:inherit;"></textarea>
+            </div>
+            
+            <div class="drawer-user"><div class="drawer-avatar">K</div><div class="drawer-username">Khyan Earl G. Villegas</div></div>
+        </div>
+        
+        <div class="drawer-overlay" id="drawerOverlay"></div>
+
+        <main class="feed-container" id="feedContainer">
+            <div id="readPostsHeader" class="read-posts-header">Read Posts</div>
+            <div id="favoritesHeader" class="favorites-header">Favorited Posts</div>
+            <div id="archiveHeader" class="archive-header">Archived Posts</div>
+            <div id="reviewedHeader" class="reviewed-header">Reviewed Posts</div> <div id="postsList"></div> 
+        </main>
+
+        <div class="profile-overlay" id="profileOverlay"></div>
+    
+    <div class="profile-drawer" id="profileDrawer">
+        <div class="profile-drawer-header">
+            <div class="big-profile-icon" id="drawerProfileIcon">
+                <span>K</span> 
+            </div>
+            
+            <div class="edit-profile-link" onclick="document.getElementById('profilePicInput').click()">
+                <i class="fa-solid fa-camera"></i> Change Photo
+            </div>
+
+            <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+        </div>
+        
+        <div class="profile-form">
+            <div class="form-group">
+                <label>Name:</label>
+                <div class="input-wrapper">
+                    <input type="text" id="profileNameInput" placeholder="Enter full name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Position:</label>
+                 <div class="input-wrapper">
+                    <input type="text" id="profilePositionInput" placeholder="Enter position">
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email:</label>
+                 <div class="input-wrapper">
+                    <input type="email" id="profileEmailInput" placeholder="Enter email">
+                    <i class="fa-solid fa-pen input-icon"></i>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Birthday:</label>
+                 <div class="input-wrapper">
+                    <input type="date" id="profileBirthdayInput">
+                 </div>
+            </div>
+
+            <div class="drawer-actions">
+                <button class="btn-back" id="closeProfileBtn">Back</button>
+                <button class="btn-save" id="saveProfileBtn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    
+    </div>
+
+    <script>
+        // --- 1. STATE VARIABLES ---
+        let currDate = new Date(); 
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        let activeSelectedDate = null; 
+        let editingEventId = null;
+        let currentEventType = 'Event';
+        let currentView = 'unread'; 
+
+        // REPLACE hardcoded array with empty array
+        let storedEvents = [];
+
+        // ==========================================
+        // 2. LOAD MESSAGES & UI LOGIC
+        // ==========================================
+        function loadMessages() {
+            const list = document.getElementById('postsList'); 
+            const readHeader = document.getElementById('readPostsHeader');
+            const favHeader = document.getElementById('favoritesHeader');
+            const archHeader = document.getElementById('archiveHeader');
+            const revHeader = document.getElementById('reviewedHeader');
+            
+            // 1. Reset Headers
+            readHeader.style.display = 'none';
+            favHeader.style.display = 'none';
+            archHeader.style.display = 'none';
+            revHeader.style.display = 'none';
+
+            // 2. Show Correct Header
+            if (currentView === 'read') readHeader.style.display = 'block';
+            else if (currentView === 'favorite') favHeader.style.display = 'block';
+            else if (currentView === 'archive') archHeader.style.display = 'block';
+            else if (currentView === 'reviewed') revHeader.style.display = 'block';
+
+            // 3. Fetch Data
+            fetch(`anonymous-message.php?filter=${currentView}`)
+                .then(res => res.json())
+                .then(messages => {
+                    list.innerHTML = ""; 
+
+                    if (!messages || messages.length === 0) {
+                        list.innerHTML = `<div style='text-align:center;color:#888;margin-top:20px;'>No messages found in ${currentView}.</div>`;
+                        return;
+                    }
+
+                    messages.forEach(msg => {
+                        let txt = msg.message_text ? msg.message_text.replace(/#Concern|#Complaint|#Query/gi, "").trim() : "";
+
+                        // Tags
+                        let tagsHtml = '';
+                        if (msg.tags) {
+                            const tagArray = msg.tags.split(',');
+                            tagsHtml = `<div class="tags-row">`;
+                            tagArray.forEach(tag => {
+                                if(tag.trim()) tagsHtml += `<div class="tag"><div class="tag-dot"></div>${tag}</div>`; 
+                            });
+                            tagsHtml += `</div>`;
+                        }
+
+                        // Images
+                        let imgHtml = '';
+                        if (msg.attachment_link && msg.attachment_link.trim() !== "") {
+                            const files = msg.attachment_link.split(',');
+                            imgHtml = `<div class="post-image-container">`;
+                            files.forEach(filename => {
+                                const cssClass = files.length > 1 ? 'post-image multiple' : 'post-image';
+                                imgHtml += `<div class="${cssClass}"><img src="uploads/${filename}" alt="Image" onerror="this.parentElement.style.display='none'"></div>`;
+                            });
+                            imgHtml += `</div>`;
+                        }
+
+                        // --- MENU OPTIONS LOGIC ---
+                        let menuOptions = '';
+                        
+                        // If in Dashboard (Unread)
+                        if (currentView === 'unread') {
+                            menuOptions += `<div class="menu-item" onclick="markAsRead(${msg.message_id})"><i class="fa-regular fa-file-lines"></i> Mark as Read</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsFavorite(${msg.message_id})"><i class="fa-regular fa-heart"></i> Add to Favorites</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsReviewed(${msg.message_id})"><i class="fa-solid fa-list-check"></i> Mark as Reviewed</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsArchived(${msg.message_id})"><i class="fa-solid fa-box-archive"></i> Send to Archive</div>`;
+                        } 
+                        else if (currentView == 'read') {
+                            menuOptions += `<div class="menu-item" onclick="markAsFavorite(${msg.message_id})"><i class="fa-regular fa-heart"></i> Add to Favorites</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsReviewed(${msg.message_id})"><i class="fa-solid fa-list-check"></i> Mark as Reviewed</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsArchived(${msg.message_id})"><i class="fa-solid fa-box-archive"></i> Send to Archive</div>`;
+                        } 
+                        else if (currentView == 'favorite') {
+                            menuOptions += `<div class="menu-item" onclick="markAsRead(${msg.message_id})"><i class="fa-regular fa-file-lines"></i> Mark as Read</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsReviewed(${msg.message_id})"><i class="fa-solid fa-list-check"></i> Mark as Reviewed</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsArchived(${msg.message_id})"><i class="fa-solid fa-box-archive"></i> Send to Archive</div>`;
+                        } 
+                        else if (currentView == 'archive') {
+                            menuOptions += `<div class="menu-item" onclick="markAsRead(${msg.message_id})"><i class="fa-regular fa-file-lines"></i> Mark as Read</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsFavorite(${msg.message_id})"><i class="fa-regular fa-heart"></i> Add to Favorites</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsReviewed(${msg.message_id})"><i class="fa-solid fa-list-check"></i> Mark as Reviewed</div>`;
+                        }
+                        else if (currentView == 'reviewed') {
+                            menuOptions += `<div class="menu-item" onclick="markAsRead(${msg.message_id})"><i class="fa-regular fa-file-lines"></i> Mark as Read</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsFavorite(${msg.message_id})"><i class="fa-regular fa-heart"></i> Add to Favorites</div>`;
+                            menuOptions += `<div class="menu-item" onclick="markAsArchived(${msg.message_id})"><i class="fa-solid fa-box-archive"></i> Send to Archive</div>`;
+                        }
+
+                        const menuHtml = `
+                        <div class="post-menu">
+                            <i class="fa-solid fa-ellipsis" onclick="togglePostMenu(this, event)" style="cursor:pointer;"></i>
+                            <div class="dropdown-menu">
+                                ${menuOptions}
+                            </div>
+                        </div>`;
+
+                        const postHTML = `
+                        <div class="post-card" id="post-${msg.message_id}">
+                            <div class="post-header">
+                                <div class="user-info">
+                                    <div class="avatar"></div>
+                                    <div class="user-name">Anonymous</div>
+                                </div>
+                                ${menuHtml}
+                            </div>
+                            <div class="post-content">${txt}</div>
+                            ${tagsHtml}
+                            ${imgHtml}
+                        </div>`;
+                        
+                        list.insertAdjacentHTML('beforeend', postHTML);
+                    });
+                })
+                .catch(err => console.error(err));
+        }
+
+        // ==========================================
+        // 3. ACTIONS
+        // ==========================================
+        
+        // Helper to handle API call
+        function updatePostStatus(url, id, confirmMsg) {
+            if(!confirm(confirmMsg)) return;
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            }).then(res => res.json()).then(data => { 
+                if(data.success) {
+                    const el = document.getElementById(`post-${id}`);
+                    if(el) el.remove(); 
+                }
+            });
+        }
+
+        window.markAsRead = function(id) { updatePostStatus('mark_as_read.php', id, "Mark as read?"); };
+        window.markAsFavorite = function(id) { updatePostStatus('mark_as_favorite.php', id, "Add to favorites?"); };
+        window.markAsArchived = function(id) { updatePostStatus('mark_as_archived.php', id, "Send to Archive?"); };
+        // NEW:
+        window.markAsReviewed = function(id) { updatePostStatus('mark_as_reviewed.php', id, "Mark as Reviewed?"); };
+        
+        // ==========================================
+        //       Search Functionality
+        // ==========================================
+        // --- SEARCH FUNCTIONALITY ---
+        function filterPosts() {
+            // 1. Get the search term
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            
+            // 2. Get all current post cards
+            const posts = document.querySelectorAll('.post-card');
+
+            // 3. Loop and toggle visibility
+            posts.forEach(post => {
+                // Get all text inside the card (Content, Tags, etc.)
+                const text = post.innerText.toLowerCase();
+                
+                if (text.includes(filter)) {
+                    post.style.display = ""; // Show
+                } else {
+                    post.style.display = "none"; // Hide
+                }
+            });
+        }
+
+        // ==========================================
+        //  NAVIGATION (Switch Views)
+        // ==========================================
+        
+        function switchView(viewName) {
+            currentView = viewName;
+            
+            // --- NEW: Clear Search Bar when switching tabs ---
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = ""; 
+            // ------------------------------------------------
+            
+            loadMessages();
+            document.getElementById('mainMenu').classList.remove('show');
+        }
+
+        window.showDashboard = function() { switchView('unread'); };
+        window.showReadPosts = function() { switchView('read'); };
+        window.showFavorites = function() { switchView('favorite'); };
+        window.showArchive = function() { switchView('archive'); };
+        // NEW:
+        window.showReviewed = function() { switchView('reviewed'); };
+
+        // ==========================================
+        // 5. UTILS (Menus & Calendar)
+        // ==========================================
+        
+        window.togglePostMenu = function(icon, event) {
+            event.stopPropagation();
+            const menu = icon.nextElementSibling;
+            document.querySelectorAll('.dropdown-menu.show').forEach(m => { if(m!==menu) m.classList.remove('show'); });
+            menu.classList.toggle('show');
+        };
+
+        const mainMenuBtn = document.getElementById('mainMenuBtn');
+        const mainMenu = document.getElementById('mainMenu');
+        if(mainMenuBtn) mainMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); mainMenu.classList.toggle('show'); });
+
+        window.addEventListener('click', () => {
+            document.querySelectorAll('.dropdown-menu.show').forEach(m => m.classList.remove('show'));
+            if (mainMenu && mainMenu.classList.contains('show')) mainMenu.classList.remove('show');
+        });
+
+        // --- CALENDAR LOGIC (Preserved) ---
+        function renderCalendar() {
+            const dt = new Date(currDate); dt.setDate(1);
+            const monthIndex = dt.getMonth(); const year = dt.getFullYear();
+            document.getElementById('currentMonthYear').innerText = `${months[monthIndex]} ${year}`;
+            const datesContainer = document.getElementById('calendarDates');
+            const lastDay = new Date(year, monthIndex + 1, 0).getDate();
+            const firstDayIndex = dt.getDay();
+            const todayStr = new Date().toISOString().split('T')[0];
+            let daysHtml = "";
+            for (let i = firstDayIndex; i > 0; i--) { daysHtml += `<div></div>`; }
+            for (let i = 1; i <= lastDay; i++) {
+                let m = String(monthIndex + 1).padStart(2, '0'); let d = String(i).padStart(2, '0'); let dateStr = `${year}-${m}-${d}`;
+                let classes = "date";
+                if (dateStr === todayStr) classes += " today";
+                const isEvent = storedEvents.some(evt => evt.event_date === dateStr);
+                if (isEvent) classes += " event-date";
+                if (activeSelectedDate === dateStr) classes += " selected-date";
+                daysHtml += `<div class="${classes}" onclick="clickCalendarDate(${i})">${i}</div>`;
+            }
+            datesContainer.innerHTML = daysHtml;
+        }
+
+        function renderEventList() {
+            // FETCH FROM DB
+            fetch('event_get.php')
+            .then(res => res.json())
+            .then(data => {
+                storedEvents = data; // Update global array
+                
+                const listContainer = document.getElementById('eventsListContainer');
+                listContainer.innerHTML = "";
+                
+                // Re-render Calendar to show highlights for new events
+                renderCalendar(); 
+
+                storedEvents.forEach(evt => {
+                    // DB Date format is usually YYYY-MM-DD
+                    const dayNum = parseInt(evt.event_date.split('-')[2]);
+                    
+                    const html = `
+                    <div class="event-card">
+                        <span onclick="viewEvent(${evt.event_id})">${dayNum} ${evt.title}</span>
+                        <i class="fa-solid fa-xmark" onclick="deleteEvent(${evt.event_id})" style="cursor:pointer;" title="Delete"></i>
+                    </div>`;
+                    listContainer.insertAdjacentHTML('beforeend', html);
+                });
+            })
+            .catch(err => console.error("Error loading events:", err));
+        }
+
+        // --- INTERACTIONS ---
+        document.getElementById('prevMonth').addEventListener('click', () => { currDate.setMonth(currDate.getMonth() - 1); renderCalendar(); });
+        document.getElementById('nextMonth').addEventListener('click', () => { currDate.setMonth(currDate.getMonth() + 1); renderCalendar(); });
+
+        window.clickCalendarDate = function(day) {
+            let y = currDate.getFullYear(); let m = String(currDate.getMonth() + 1).padStart(2, '0'); let d = String(day).padStart(2, '0');
+            let isoDate = `${y}-${m}-${d}`;
+            activeSelectedDate = isoDate; renderCalendar(); 
+            const dateObj = new Date(y, currDate.getMonth(), day);
+            const dateText = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+            if(document.getElementById('drawerDateDisplay')) document.getElementById('drawerDateDisplay').innerText = dateText;
+            editingEventId = null;
+        };
+
+        document.getElementById('addEventBtn').addEventListener('click', () => {
+            if (!activeSelectedDate) { alert("Please select a date on the calendar first."); return; }
+            editingEventId = null;
+            document.getElementById('drawerSaveBtn').innerText = "Save";
+            document.getElementById('eventTitleInput').value = "";
+            document.getElementById('eventDescInput').value = "";
+            openDrawer();
+        });
+
+        window.viewEvent = function(id) {
+            // Find in local array (which was populated by get_events.php)
+            const event = storedEvents.find(e => e.event_id == id); // Loose equality == for string/int types
+            
+            if (event) {
+                editingEventId = id;
+                document.getElementById('drawerSaveBtn').innerText = "Update";
+                document.getElementById('eventTitleInput').value = event.title;
+                document.getElementById('eventDescInput').value = event.description || "";
+                
+                // Set date logic
+                activeSelectedDate = event.event_date;
+                
+                // Update text display
+                const [y, m, d] = event.event_date.split('-').map(Number);
+                const dateObj = new Date(y, m - 1, d);
+                const dateText = dateObj.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+                if(document.getElementById('drawerDateDisplay')) {
+                    document.getElementById('drawerDateDisplay').innerText = dateText;
+                }
+
+                renderCalendar();
+                openDrawer();
+            }
+        };
+
+        window.saveEvent = function() {
+            const titleInput = document.getElementById('eventTitleInput');
+            const descInput = document.getElementById('eventDescInput');
+            const title = titleInput.value;
+            const desc = descInput.value;
+
+            if (title.trim() === "") { alert("Enter a title"); return; }
+            if (!activeSelectedDate) { alert("Error: No date selected"); return; }
+
+            const payload = {
+                title: title,
+                date: activeSelectedDate,
+                description: desc,
+                id: editingEventId // Only used if updating
+            };
+
+            // Decide URL based on mode
+            const url = editingEventId ? 'event_update.php' : 'event_add.php';
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Success! Refresh list
+                    renderEventList();
+                    
+                    // Cleanup
+                    titleInput.value = "";
+                    descInput.value = "";
+                    activeSelectedDate = null; 
+                    editingEventId = null; 
+                    closeDrawer();
+                } else {
+                    alert("Error saving event: " + data.error);
+                }
+            });
+        };
+
+        window.deleteEvent = function(id) {
+            if(!confirm("Delete this event?")) return;
+
+            fetch('event_delete.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    renderEventList(); // Refresh list & calendar
+                } else {
+                    alert("Error deleting event.");
+                }
+            });
+        };
+
+        const eventDrawer = document.getElementById('eventDrawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+        function openDrawer() { eventDrawer.classList.add('open'); drawerOverlay.classList.add('open'); setTimeout(() => document.getElementById('eventTitleInput').focus(), 300); }
+        function closeDrawer() { eventDrawer.classList.remove('open'); drawerOverlay.classList.remove('open'); }
+        document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
+        drawerOverlay.addEventListener('click', closeDrawer);
+
+        // --- INIT ---
+        window.onload = function() {
+            renderEventList();
+            renderCalendar();
+            loadMessages(); 
+            
+            // NEW: Load the header profile picture immediately
+            loadHeaderProfile();
+        };
+
+        // ==========================================
+        // 7. PROFILE DRAWER & HEADER LOGIC (UPDATED)
+        // ==========================================
+        const profileDrawer = document.getElementById('profileDrawer');
+        const profileOverlay = document.getElementById('profileOverlay');
+        const closeProfileBtn = document.getElementById('closeProfileBtn');
+        const saveProfileBtn = document.getElementById('saveProfileBtn');
+        
+        // Target the header icon by Class (safer than ID if you missed adding it)
+        const headerProfileBtn = document.querySelector('.profile-icon'); 
+
+        // Inputs
+        const pName = document.getElementById('profileNameInput');
+        const pPos = document.getElementById('profilePositionInput');
+        const pEmail = document.getElementById('profileEmailInput');
+        const pBirth = document.getElementById('profileBirthdayInput');
+        
+        const pIcon = document.getElementById('drawerProfileIcon'); // Big circle
+        const pFile = document.getElementById('profilePicInput');   // File input
+
+        // --- NEW: LOAD HEADER IMAGE ON STARTUP ---
+        function loadHeaderProfile() {
+            fetch('get_user_profile.php')
+                .then(res => res.json())
+                .then(response => {
+                    if (response.success) {
+                        const data = response.data;
+                        
+                        // Update Header Icon
+                        if (data.profile_pic && data.profile_pic !== "default_avatar.png") {
+                            headerProfileBtn.innerHTML = `<img src="uploads/${data.profile_pic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                        } else if (data.fullname) {
+                            headerProfileBtn.innerText = data.fullname.charAt(0).toUpperCase();
+                        }
+                    }
+                });
+        }
+
+        // OPEN DRAWER (Populate inputs)
+        window.openProfileDrawer = function() {
+            profileDrawer.classList.add('open');
+            profileOverlay.classList.add('open');
+
+            fetch('get_user_profile.php')
+                .then(res => res.json())
+                .then(response => {
+                    if (response.success) {
+                        const data = response.data;
+                        pName.value = data.fullname || "";
+                        pPos.value = data.position || "";
+                        pEmail.value = data.email || "";
+                        pBirth.value = data.birthday || ""; 
+
+                        // Update Big Drawer Icon
+                        if (data.profile_pic && data.profile_pic !== "default_avatar.png") {
+                            pIcon.innerHTML = `<img src="uploads/${data.profile_pic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                        } else if (data.fullname) {
+                            pIcon.innerText = data.fullname.charAt(0).toUpperCase();
+                        }
+                    }
+                });
+        };
+
+        // CLOSE DRAWER
+        window.closeProfileDrawer = function() {
+            profileDrawer.classList.remove('open');
+            profileOverlay.classList.remove('open');
+        };
+
+        // IMAGE PREVIEW
+        if (pFile) {
+            pFile.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Update Big Icon immediately for preview
+                        pIcon.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+        }
+
+        // SAVE PROFILE
+        window.saveProfile = function() {
+            const saveBtn = document.getElementById('saveProfileBtn');
+            saveBtn.innerText = "Saving...";
+
+            const formData = new FormData();
+            formData.append('fullname', pName.value);
+            formData.append('position', pPos.value);
+            formData.append('email', pEmail.value);
+            formData.append('birthday', pBirth.value);
+            if (pFile.files[0]) {
+                formData.append('profile_pic', pFile.files[0]);
+            }
+
+            fetch('update_user_profile.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(response => {
+                saveBtn.innerText = "Save";
+                if (response.success) {
+                    alert("Profile updated!");
+                    
+                    // RE-FETCH to update the Header Icon immediately with the new confirmed image
+                    loadHeaderProfile();
+                    
+                    closeProfileDrawer();
+                } else {
+                    alert("Error: " + response.error);
+                }
+            })
+            .catch(err => console.error(err));
+        };
+
+        if(closeProfileBtn) closeProfileBtn.addEventListener('click', closeProfileDrawer);
+        if(profileOverlay) profileOverlay.addEventListener('click', closeProfileDrawer);
+        if(saveProfileBtn) saveProfileBtn.addEventListener('click', saveProfile);
+
+        // --- NOTIFICATION JS ---
+        function toggleNotifications(event) {
+            if(event) event.stopPropagation();
+            
+            const notifDropdown = document.getElementById('notificationDropdown');
+            const mainMenu = document.getElementById('mainMenu');
+            
+            // Close main menu so they don't overlap
+            if(mainMenu) mainMenu.classList.remove('show');
+            
+            if (notifDropdown.classList.contains('show')) {
+                notifDropdown.classList.remove('show');
+            } else {
+                fetchNotifications(); // Load data
+                notifDropdown.classList.add('show');
+            }
+        }
+
+        function fetchNotifications() {
+            fetch('get_notifications.php')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('notifListContainer');
+                    list.innerHTML = "";
+
+                    if (data.length === 0) {
+                        list.innerHTML = "<div style='padding:20px;text-align:center;color:#888;font-size:13px;'>No new notifications</div>";
+                        return;
+                    }
+
+                    data.forEach(notif => {
+                        let iconHtml = '';
+                        let iconClass = '';
+
+                        // --- LOGIC: EVENT vs MESSAGE ---
+                        if (notif.type === 'event') {
+                            // It's an Event: Show User Profile
+                            iconClass = 'icon-evt'; // Red background
+                            
+                            if (notif.profile_pic && notif.profile_pic !== "default_avatar.png") {
+                                // Show Real Image
+                                iconHtml = `<img src="uploads/${notif.profile_pic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                            } else {
+                                // Show Initial (Fallback)
+                                const initial = notif.fullname ? notif.fullname.charAt(0).toUpperCase() : "U";
+                                iconHtml = `<span style="font-weight:bold;font-size:14px;">${initial}</span>`;
+                            }
+                        } else {
+                            // It's Anonymous: Show Shield
+                            iconClass = 'icon-msg'; // Orange background
+                            iconHtml = '<i class="fa-solid fa-shield-halved"></i>';
+                        }
+
+                        const item = `
+                        <div class="notif-item" onclick="handleNotifClick('${notif.type}')">
+                            <div class="notif-icon ${iconClass}">
+                                ${iconHtml}
+                            </div>
+                            <div class="notif-content">
+                                <div class="notif-text">${notif.text}</div>
+                                <div class="notif-time">${notif.time_ago}</div>
+                            </div>
+                            <div class="notif-dots"><i class="fa-solid fa-ellipsis"></i></div>
+                        </div>`;
+                        
+                        list.insertAdjacentHTML('beforeend', item);
+                    });
+                })
+                .catch(err => console.error("Notif Error:", err));
+        }
+
+        function handleNotifClick(type) {
+            // Navigate based on type if needed
+            document.getElementById('notificationDropdown').classList.remove('show');
+            if(type === 'message') showDashboard(); 
+        }
+
+        // Close when clicking outside
+        window.addEventListener('click', (e) => {
+            const notif = document.getElementById('notificationDropdown');
+            if (notif && notif.classList.contains('show') && !e.target.closest('.notif-dropdown')) {
+                notif.classList.remove('show');
+            }
+        });
+
+        // --- COPY LINK FUNCTION ---
+        function copyLink() {
+            // 1. Get the current URL path of the dashboard
+            // Example: http://localhost/CampusConnect/dashboard.html
+            const currentUrl = window.location.href;
+            
+            // 2. Remove 'dashboard.html' and replace it with 'anonymous-message.html'
+            // This ensures it works even if you change your folder name later
+            const targetUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1) + "anonymous-message.html";
+
+            // 3. Copy to Clipboard
+            navigator.clipboard.writeText(targetUrl).then(() => {
+                alert("Link copied to clipboard!\n\nYou can now paste it on Facebook:\n" + targetUrl);
+                
+                // Close the menu
+                document.getElementById('mainMenu').classList.remove('show');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert("Failed to copy link.");
+            });
+        }
+    </script>
+</body>
+</html>

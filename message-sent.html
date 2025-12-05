@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Sent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #960b15;
+            --cream: #fdfcd7;
+            --orange-btn: #cf6828;
+            --text-color: #4a4a4a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: var(--primary-red);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Header Curve */
+        .header-curve {
+            position: absolute;
+            top: -55px;
+            left: 0;
+            width: 100%;
+            height: 35%; /* Adjusts how far down the curve goes */
+            background-color: #fffacb;
+            border-bottom-left-radius: 99% 77%;
+            border-bottom-right-radius: 99% 77%;
+            z-index: 1;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            padding-bottom: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            top: -39px;
+        }
+
+        /* Logo */
+        .logo-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            /* background-color: white; */
+            border-radius: 50%;
+            /* border: 4px solid #d4af37; */
+            margin-bottom: 40px;
+            overflow: hidden;
+            /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 44px;
+        }
+        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .username-title {
+            color: #fffacb; font-weight: bold; font-size: 22px;
+            margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .sub-text {
+            color: #fffacb; font-size: 12px; margin-bottom: 40px; opacity: 0.9;
+        }
+
+        /* Success Icon */
+        .success-icon {
+            font-size: 80px;
+            color: var(--cream);
+            margin-bottom: 10px;
+            /* Using a drop shadow to make it pop against red */
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        }
+
+        .sent-text {
+            color: #fffacb;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        /* Button */
+        .btn-another {
+            width: 100%; padding: 15px; border-radius: 25px; border: none;
+            background-color: var(--orange-btn); color: #fffacb;
+            font-size: 16px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.3s;
+        }
+        .btn-another:hover { background-color: #b5561e; }
+
+        .footer {
+            width: 100%; text-align: center; color: #fffacb;
+            font-size: 10px; opacity: 0.7; padding-bottom: 20px;
+            margin-top: auto; z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-curve"></div>
+
+    <div class="wrapper">
+        <div class="logo-container">
+            <img src="images/SSGLOGO.png" alt="Logo" onerror="this.style.display='none'">
+        </div>
+
+        <h2 class="username-title">@ssgctuac</h2>
+        <p class="sub-text">Thank you for sending us a message!</p>
+
+        <i class="fa-solid fa-envelope-circle-check success-icon"></i>
+        <p class="sent-text">Sent!</p>
+
+        <button class="btn-another" onclick="window.location.href='anonymous-message.html'">Send another message</button>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 ssgctuac</p>
+        <p>Terms &middot; Privacy</p>
+    </div>
+
+</body>
+</html>
