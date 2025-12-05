@@ -1,6 +1,7 @@
 ( Step-by-Step  Navigation )	
 
 ---- (anonymous user) — submit a complaint / concern / query ----
+
   1.Open the app link (public landing page).
   2.See a short explanation: “Send us anonymous message”
   3.Type message in the main input area (single textbox), attach photo, and optionally choose a category (Concern / Complaint / Query).
@@ -9,6 +10,7 @@
   #The Anonymous message will be displayed in the officer and admin feed
   
 ---- Officer account creation (signup) pre-approval flow -----
+
   1.On the landing page, click "Get Started" and you will get redirected into sign up page.
   2.Fill the signup form:
     #Email (Gmail recommended)
@@ -21,6 +23,7 @@
   4.The admin sees the pending officer request in Admin Dashboard.
   
 ---- Admin — approve officer requests (required before officer can sign in) ----
+
   1.In Admin dashboard, click the Officers button in the sidebar you can see the Pending button.
   2.Review each request (view submitted email, full name, position, created).
   3.Click Approve or Decline:
@@ -28,12 +31,14 @@
   #If Decline the system alert says "Are you sure you want to remove this user?"
   
 ---- Login officer / admin ----
+
   1.In Sign In.
   2.Enter Email and Password.
   3.Click Sign In.
   4.On success, if role is officer it will redirected to officer feed, if role is admin it will redirected to admin feed.
 
 ---- Forgot Password ----
+
   1. In Sign in you see the forgot password button under the password.
   2. By clicking forgot password, you'll get redirected and ask to input your email to receive a verification code.
   3. By clicking send code, you'll get redirected and ask to input the otp you receive in your email.
@@ -42,6 +47,7 @@
   6. Then click Back to login to redirected to login.
 
 ---- Officer / Admin Feed — features & navigation ----
+
   1. Feed
      #Where all of the anonymous message shown.
      #Can be clasified as Mark As Read, Add to Favorites, Mark as Reviewed, Send to Archived.
@@ -86,6 +92,7 @@
      3. Click Save button
         
 ---- Admin Dasboard ----
+
   #Have Dashboard, Officers, Activity logs sections.
   1. Dashboard
      #You will see:
