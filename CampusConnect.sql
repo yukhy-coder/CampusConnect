@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 04, 2025 at 04:51 PM
+-- Generation Time: Dec 10, 2025 at 04:18 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -31,61 +31,33 @@ CREATE TABLE `activity_logs` (
   `log_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `action` varchar(50) NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT current_timestamp()
+  `timestamp` datetime NOT NULL DEFAULT current_timestamp(),
+  `logout_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `activity_logs`
 --
 
-INSERT INTO `activity_logs` (`log_id`, `user_id`, `action`, `timestamp`) VALUES
-(2, 8, 'Login', '2025-12-04 21:55:49'),
-(3, 14, 'Login', '2025-12-04 22:24:19'),
-(4, 8, 'Login', '2025-12-04 22:27:17'),
-(5, 15, 'Login', '2025-12-04 22:30:12'),
-(6, 14, 'Login', '2025-12-04 22:53:56'),
-(7, 14, 'Login', '2025-12-04 22:53:57'),
-(8, 14, 'Login', '2025-12-04 22:53:58'),
-(9, 14, 'Login', '2025-12-04 22:54:00'),
-(10, 8, 'Login', '2025-12-04 22:54:44'),
-(11, 8, 'Login', '2025-12-04 22:56:46'),
-(12, 8, 'Login', '2025-12-04 22:56:58'),
-(13, 8, 'Login', '2025-12-04 22:58:02'),
-(14, 14, 'Login', '2025-12-04 22:58:19'),
-(15, 8, 'Login', '2025-12-04 22:59:33'),
-(16, 8, 'Login', '2025-12-04 22:59:49'),
-(17, 8, 'Login', '2025-12-04 23:00:00'),
-(18, 14, 'Login', '2025-12-04 23:00:32'),
-(19, 8, 'Login', '2025-12-04 23:01:07'),
-(20, 8, 'Login', '2025-12-04 23:01:39'),
-(21, 8, 'Login', '2025-12-04 23:03:01'),
-(22, 8, 'Login', '2025-12-04 23:03:02'),
-(23, 8, 'Login', '2025-12-04 23:03:02'),
-(24, 8, 'Login', '2025-12-04 23:03:02'),
-(25, 8, 'Login', '2025-12-04 23:03:02'),
-(26, 8, 'Login', '2025-12-04 23:03:02'),
-(27, 8, 'Login', '2025-12-04 23:16:09'),
-(28, 8, 'Login', '2025-12-04 23:16:11'),
-(29, 8, 'Login', '2025-12-04 23:16:12'),
-(30, 8, 'Login', '2025-12-04 23:16:12'),
-(31, 8, 'Login', '2025-12-04 23:16:12'),
-(32, 8, 'Login', '2025-12-04 23:16:12'),
-(33, 8, 'Login', '2025-12-04 23:16:12'),
-(34, 8, 'Login', '2025-12-04 23:16:13'),
-(35, 8, 'Login', '2025-12-04 23:16:13'),
-(36, 8, 'Login', '2025-12-04 23:16:13'),
-(37, 8, 'Login', '2025-12-04 23:16:13'),
-(38, 8, 'Login', '2025-12-04 23:16:14'),
-(39, 8, 'Login', '2025-12-04 23:16:15'),
-(40, 8, 'Login', '2025-12-04 23:17:48'),
-(41, 14, 'Login', '2025-12-04 23:18:00'),
-(42, 14, 'Login', '2025-12-04 23:20:25'),
-(43, 8, 'Login', '2025-12-04 23:20:35'),
-(44, 15, 'Login', '2025-12-04 23:21:10'),
-(45, 15, 'Login', '2025-12-04 23:22:24'),
-(46, 8, 'Login', '2025-12-04 23:22:33'),
-(47, 15, 'Login', '2025-12-04 23:22:55'),
-(48, 8, 'Login', '2025-12-04 23:39:18');
+INSERT INTO `activity_logs` (`log_id`, `user_id`, `action`, `timestamp`, `logout_time`) VALUES
+(58, 8, 'Login', '2025-12-05 00:20:35', '2025-12-05 00:20:49'),
+(59, 14, 'Login', '2025-12-05 00:20:57', '2025-12-05 00:21:09'),
+(60, 8, 'Login', '2025-12-05 00:21:14', '2025-12-05 00:21:36'),
+(61, 14, 'Login', '2025-12-05 00:21:45', '2025-12-05 00:44:10'),
+(62, 8, 'Login', '2025-12-05 00:44:16', NULL),
+(63, 8, 'Login', '2025-12-05 16:13:30', '2025-12-05 16:13:54'),
+(64, 8, 'Login', '2025-12-05 16:35:11', '2025-12-05 17:49:00'),
+(65, 8, 'Login', '2025-12-05 18:04:33', NULL),
+(66, 8, 'Login', '2025-12-09 23:09:18', '2025-12-09 23:09:47'),
+(67, 8, 'Login', '2025-12-09 23:22:50', '2025-12-09 23:23:11'),
+(68, 16, 'Login', '2025-12-09 23:23:15', '2025-12-09 23:30:23'),
+(69, 8, 'Login', '2025-12-09 23:30:29', '2025-12-09 23:34:40'),
+(70, 8, 'Login', '2025-12-09 23:36:09', '2025-12-09 23:37:20'),
+(71, 8, 'Login', '2025-12-10 09:54:27', '2025-12-10 09:58:32'),
+(72, 14, 'Login', '2025-12-10 09:58:40', NULL),
+(73, 8, 'Login', '2025-12-10 10:54:01', '2025-12-10 11:11:59'),
+(74, 8, 'Login', '2025-12-10 11:12:10', '2025-12-10 11:12:32'),
+(75, 8, 'Login', '2025-12-10 11:13:06', NULL);
 
 -- --------------------------------------------------------
 
@@ -133,7 +105,9 @@ INSERT INTO `anonymousmessages` (`message_id`, `message_text`, `tags`, `attachme
 (44, 'bayottt', '', NULL, '::1', '2025-12-04 19:16:54', 0, 0, 0, 0),
 (45, 'bayott', '', NULL, '::1', '2025-12-04 19:17:02', 0, 0, 0, 0),
 (46, 'okay kayow', '', NULL, '::1', '2025-12-04 19:47:32', 0, 0, 0, 0),
-(47, 'kwee #Concern #Complaint #Query ', 'Concern,Complaint,Query', NULL, '::1', '2025-12-04 19:47:56', 0, 0, 0, 0);
+(47, 'kwee #Concern #Complaint #Query ', 'Concern,Complaint,Query', NULL, '::1', '2025-12-04 19:47:56', 0, 0, 0, 0),
+(48, 'Goodmorning', '', NULL, '::1', '2025-12-05 00:27:52', 0, 0, 0, 0),
+(49, 'adas', '', NULL, '::1', '2025-12-09 23:42:53', 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -146,21 +120,17 @@ CREATE TABLE `events` (
   `event_date` date NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `events`
 --
 
-INSERT INTO `events` (`event_id`, `event_date`, `title`, `description`, `created_at`) VALUES
-(7, '2025-12-11', 'Pasko sa CTU', '', '2025-12-03 23:33:22'),
-(8, '2025-12-05', 'Project Presentation', '', '2025-12-04 05:55:09'),
-(9, '2025-12-09', 'okay', '', '2025-12-04 11:06:33'),
-(10, '2025-12-19', 'year end', '', '2025-12-04 11:29:41'),
-(11, '2025-12-20', 'Year end', '', '2025-12-04 11:30:36'),
-(13, '2025-12-25', 'Pasko', '', '2025-12-04 13:34:28'),
-(15, '2025-12-31', 'New Year', '', '2025-12-04 18:29:40');
+INSERT INTO `events` (`event_id`, `event_date`, `title`, `description`, `created_at`, `user_id`) VALUES
+(18, '2025-12-11', 'Pasko sa CTU', '', '2025-12-10 09:58:26', 8),
+(19, '2025-12-25', 'Pasko', '', '2025-12-10 09:58:53', 14);
 
 -- --------------------------------------------------------
 
@@ -182,9 +152,7 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `type`, `text`, `is_read`, `created_at`, `user_id`) VALUES
-(1, 'event', 'A user added a new event!', 0, '2025-12-04 11:06:33', NULL),
 (2, 'message', 'You have a new unread post. Tap to navigate!', 0, '2025-12-04 11:07:26', NULL),
-(3, 'event', 'Villegas Khyan Earl G. added event: year end', 0, '2025-12-04 11:29:41', 8),
 (5, 'message', 'You have a new unread post. Tap to navigate!', 0, '2025-12-04 11:30:51', NULL),
 (6, 'message', 'You have a new unread post. Tap to navigate!', 0, '2025-12-04 11:31:12', NULL),
 (7, 'message', 'You have a new unread post. Tap to navigate!', 0, '2025-12-04 11:31:15', NULL),
@@ -193,9 +161,8 @@ INSERT INTO `notifications` (`id`, `type`, `text`, `is_read`, `created_at`, `use
 (10, 'message', 'You have a new unread post. Tap to navigate!', 0, '2025-12-04 11:35:54', NULL),
 (11, 'message', 'You have a new unread post. Tap to navigate!', 0, '2025-12-04 11:35:57', NULL),
 (12, 'message', 'You have a new unread post. Tap to navigate!', 0, '2025-12-04 11:36:00', NULL),
-(13, 'event', 'Villegas Khyan Earl G. added event: Kuan', 0, '2025-12-04 13:34:22', 8),
-(14, 'event', 'Villegas Khyan Earl G. added event: Pasko', 0, '2025-12-04 13:34:28', 8),
-(15, 'event', 'Villegas Khyan Earl G. added event: New Year', 0, '2025-12-04 13:34:43', 8);
+(19, 'event', 'Villegas Khyan Earl G. added event: Pasko sa CTU', 0, '2025-12-10 09:58:26', 8),
+(20, 'event', 'Machica, John Lester M. added event: Pasko', 0, '2025-12-10 09:58:53', 14);
 
 -- --------------------------------------------------------
 
@@ -210,6 +177,14 @@ CREATE TABLE `passwordreset` (
   `expires_at` datetime NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `passwordreset`
+--
+
+INSERT INTO `passwordreset` (`id`, `user_email`, `otp_code`, `expires_at`, `created_at`) VALUES
+(12, 'villegaskhyan@gmail.com', '5803', '2025-12-05 10:52:37', '2025-12-05 17:52:37'),
+(13, 'villegaskhyan@gmail.com', '9684', '2025-12-09 16:38:09', '2025-12-09 23:38:09');
 
 -- --------------------------------------------------------
 
@@ -237,9 +212,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `fullname`, `email`, `birthday`, `profile_pic`, `password`, `position`, `role`, `is_approved`, `created_at`, `approved_at`, `last_login`) VALUES
-(8, 'Villegas Khyan Earl G.', 'villegaskhyanearl@gmail.com', '2005-04-20', '1764847134_pfp_Gemini_Generated_Image_tqt360tqt360tqt3.png', '$2y$10$RmqhANJStVb.kKPT5Ws6Xech5L4aFcBitJ2pxQ1ZuVxueP28Ht022', 'DOCUMENTATION OFFICER', 'admin', 1, '2025-12-04 05:58:10', '2025-12-04 20:20:03', '2025-12-04 23:39:18'),
-(14, 'Machica, John Lester M.', 'laxusmachica@gmail.com', NULL, NULL, '$2y$10$75S3.pnRqqwsJJcEXZGRuOJB37NwU581dz7D63KwcDC2x1abgOZ2i', 'LOGISTICS COMMITTEE', 'officer', 1, '2025-12-04 22:24:10', '2025-12-04 22:25:17', '2025-12-04 23:20:25'),
-(15, 'Villegas Khyan Earl G.', 'villegaskhyan@gmail.com', '2005-04-20', '1764861733_pfp_1000236119.jpg', '$2y$10$SvDe3364HQgmA.Nt7N7S4eHjzH6DtmKv7HBf8Qulr1idKzVbcEtcW', 'DOCUMENTATION OFFICER', 'officer', 1, '2025-12-04 22:30:06', '2025-12-04 23:20:48', '2025-12-04 23:22:55');
+(8, 'Villegas Khyan Earl G.', 'villegaskhyanearl@gmail.com', '2005-04-20', '1764847134_pfp_Gemini_Generated_Image_tqt360tqt360tqt3.png', '$2y$10$RmqhANJStVb.kKPT5Ws6Xech5L4aFcBitJ2pxQ1ZuVxueP28Ht022', 'DOCUMENTATION OFFICER', 'admin', 1, '2025-12-04 05:58:10', '2025-12-04 20:20:03', '2025-12-10 11:13:06'),
+(14, 'Machica, John Lester M.', 'laxusmachica@gmail.com', NULL, NULL, '$2y$10$75S3.pnRqqwsJJcEXZGRuOJB37NwU581dz7D63KwcDC2x1abgOZ2i', 'LOGISTICS COMMITTEE', 'admin', 1, '2025-12-04 22:24:10', '2025-12-04 22:25:17', '2025-12-10 09:58:40'),
+(16, 'Villegas Khyan Earl G.', 'villegaskhyan@gmail.com', NULL, NULL, '$2y$10$ZsKnEyT0WvBOTXuv72AMbuJhP31cD2I50mVv0CjMZ/8Het4Rm8.BK', 'DOCUMENTATION OFFICER', 'officer', 1, '2025-12-05 16:14:13', '2025-12-09 23:23:04', '2025-12-09 23:23:15');
 
 --
 -- Indexes for dumped tables
@@ -262,7 +237,8 @@ ALTER TABLE `anonymousmessages`
 -- Indexes for table `events`
 --
 ALTER TABLE `events`
-  ADD PRIMARY KEY (`event_id`);
+  ADD PRIMARY KEY (`event_id`),
+  ADD KEY `fk_events_users` (`user_id`);
 
 --
 -- Indexes for table `notifications`
@@ -293,37 +269,37 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- AUTO_INCREMENT for table `anonymousmessages`
 --
 ALTER TABLE `anonymousmessages`
-  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `passwordreset`
 --
 ALTER TABLE `passwordreset`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Constraints for dumped tables
@@ -334,6 +310,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `activity_logs`
   ADD CONSTRAINT `fk_activity_logs` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `events`
+--
+ALTER TABLE `events`
+  ADD CONSTRAINT `fk_events_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `notifications`
